@@ -10,6 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-
       - run: bun install
       - run: bun test
 
@@ -26,5 +31,12 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
       - uses: oven-sh/setup-bun@v2
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-
       - run: bun install
+      - run: bun run build
+      - run: bun run build:types
       - run: npm publish
