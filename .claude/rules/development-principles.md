@@ -7,7 +7,6 @@
 
 - `src/services/` — 핵심 도메인 서비스 (PageRenderer, ContentExtractor)
 - `src/infrastructure/` — 외부 시스템 어댑터 (BrowserManager, LLMClient)
-- `src/utils/` — 순수 함수 도우미 (html-preprocessor, markdown-formatter)
 
 ## 클래스 설계
 
