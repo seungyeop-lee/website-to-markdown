@@ -83,7 +83,7 @@ const markdown = await wtm('https://example.com/article', {
 });
 
 // LLM 후처리 비활성화 (기본 마크다운 변환만 수행)
-const markdown = await wtm('https://example.com/article', {});
+const markdown = await wtm('https://example.com/article');
 
 // 디버그 모드
 const markdown = await wtm('https://example.com/article', {

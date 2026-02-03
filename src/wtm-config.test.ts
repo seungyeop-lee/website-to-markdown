@@ -3,8 +3,8 @@ import { WtmConfig } from './wtm-config.ts';
 import type { WtmOptions } from './types.ts';
 
 describe('WtmConfig', () => {
-  test('빈 옵션 시 기본값 적용', () => {
-    const config = new WtmConfig({});
+  test('옵션 미전달 시 기본값 적용', () => {
+    const config = new WtmConfig();
 
     expect(config.debug).toBe(false);
     expect(config.llm.enable).toBe(false);
@@ -53,7 +53,7 @@ describe('WtmConfig', () => {
   });
 
   test('llm 미지정 시 LLM 비활성 기본값 적용', () => {
-    const config = new WtmConfig({});
+    const config = new WtmConfig();
 
     expect(config.llm.enable).toBe(false);
     expect(config.llm.baseUrl).toBe('');

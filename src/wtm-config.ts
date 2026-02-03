@@ -17,9 +17,9 @@ export class WtmConfig {
     model: '',
   };
 
-  constructor(options: WtmOptions) {
-    this.debug = options.debug ?? false;
-    this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options.llm };
+  constructor(options?: WtmOptions) {
+    this.debug = options?.debug ?? false;
+    this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options?.llm };
 
     if (this.llm.enable) {
       this.validateLLMConfig(this.llm);

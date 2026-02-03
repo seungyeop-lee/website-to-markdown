@@ -16,7 +16,7 @@ export type { WtmOptions };
 /**
  * URL을 받아 Markdown으로 변환하여 반환한다.
  */
-export async function wtm(url: string, options: WtmOptions): Promise<string> {
+export async function wtm(url: string, options?: WtmOptions): Promise<string> {
   try {
     new URL(url);
   } catch {
