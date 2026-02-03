@@ -6,10 +6,11 @@
 
 ### 주요 기능
 
-- SPA/JavaScript 렌더링 사이트 지원 (Playwright)
-- 100k 토큰 초과 시 자동 청킹
-- 메타데이터 추출 (title, description, og:image)
-- 이미지 URL 원본 유지
+- SPA/JavaScript 렌더링 사이트 지원 (Playwright + Stealth 플러그인)
+- [mdream](https://github.com/nichochar/mdream) 기반 HTML → Markdown 변환 (본문 추출, 노이즈 필터링, Tailwind 처리)
+- LLM 후처리를 통한 마크다운 정제 (선택 사항)
+- YAML frontmatter 자동 생성 (url, createdAt)
+- `--debug` 모드로 파이프라인 각 스텝 로깅
 
 ---
 
@@ -46,6 +47,9 @@ bunx @seungyeop-lee/website-to-markdown https://example.com/article
 # LLM 후처리 없이 기본 마크다운 변환만 수행
 bunx @seungyeop-lee/website-to-markdown --no-llm https://example.com/article
 
+# 디버그 모드 (파이프라인 각 스텝 로깅)
+bunx @seungyeop-lee/website-to-markdown --debug https://example.com/article
+
 # 파일로 저장
 bunx @seungyeop-lee/website-to-markdown https://example.com/article > output.md
 ```
@@ -58,6 +62,8 @@ bun install -g @seungyeop-lee/website-to-markdown
 
 ```bash
 wtm https://example.com/article
+wtm --no-llm https://example.com/article
+wtm --debug https://example.com/article
 wtm https://example.com/article > output.md
 ```
 
@@ -77,12 +83,16 @@ const markdown = await wtm('https://example.com/article', {
 });
 
 // LLM 후처리 비활성화 (기본 마크다운 변환만 수행)
+const markdown = await wtm('https://example.com/article', {});
+
+// 디버그 모드
 const markdown = await wtm('https://example.com/article', {
+  debug: true,
   llm: {
-    enable: false,
-    baseUrl: '',
-    apiKey: '',
-    model: '',
+    enable: true,
+    baseUrl: 'https://api.openai.com/v1',
+    apiKey: 'your-api-key',
+    model: 'gpt-4o-mini',
   },
 });
 ```
