@@ -3,23 +3,15 @@ import { WtmConfig } from './wtm-config.ts';
 import type { WtmOptions } from './types.ts';
 
 describe('WtmConfig', () => {
-  test('debug 미지정 시 false 기본값 적용', () => {
-    const options: WtmOptions = {
-      llm: { enable: false, baseUrl: '', apiKey: '', model: '' },
-    };
-
-    const config = new WtmConfig(options);
+  test('빈 옵션 시 기본값 적용', () => {
+    const config = new WtmConfig({});
 
     expect(config.debug).toBe(false);
+    expect(config.llm.enable).toBe(false);
   });
 
   test('debug 지정 시 해당 값 사용', () => {
-    const options: WtmOptions = {
-      llm: { enable: false, baseUrl: '', apiKey: '', model: '' },
-      debug: true,
-    };
-
-    const config = new WtmConfig(options);
+    const config = new WtmConfig({ debug: true });
 
     expect(config.debug).toBe(true);
   });
@@ -57,11 +49,16 @@ describe('WtmConfig', () => {
   });
 
   test('LLM disable 시 필수 필드 없어도 통과', () => {
-    const options: WtmOptions = {
-      llm: { enable: false, baseUrl: '', apiKey: '', model: '' },
-    };
+    expect(() => new WtmConfig({ llm: { enable: false } })).not.toThrow();
+  });
 
-    expect(() => new WtmConfig(options)).not.toThrow();
+  test('llm 미지정 시 LLM 비활성 기본값 적용', () => {
+    const config = new WtmConfig({});
+
+    expect(config.llm.enable).toBe(false);
+    expect(config.llm.baseUrl).toBe('');
+    expect(config.llm.apiKey).toBe('');
+    expect(config.llm.model).toBe('');
   });
 
   test('정상 입력 시 프로퍼티 접근 가능', () => {

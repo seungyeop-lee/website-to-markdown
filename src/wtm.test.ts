@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { wtm } from '../src/wtm.ts';
+import { wtm } from './wtm.ts';
 
 const options = { llm: { baseUrl: '', apiKey: '', model: '' } };
 

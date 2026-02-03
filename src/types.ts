@@ -1,6 +1,7 @@
 /**
  * 공유 타입 정의
  */
+import type { LLMConfig } from "./infrastructure/llm-client.ts";
 
 export interface PageMetadata {
   url: string;
@@ -13,6 +14,6 @@ export interface RenderResult {
 }
 
 export interface WtmOptions {
-  llm: import('./infrastructure/llm-client.ts').LLMConfig;
+  llm?: Partial<LLMConfig>;
   debug?: boolean;
 }

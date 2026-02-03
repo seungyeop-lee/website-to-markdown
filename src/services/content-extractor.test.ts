@@ -1,6 +1,6 @@
 import { test, expect, describe, mock, beforeEach, afterEach } from 'bun:test';
-import { ContentExtractor } from '../src/services/content-extractor.ts';
-import { LLMClient } from '../src/infrastructure/llm-client.ts';
+import { ContentExtractor } from './content-extractor.ts';
+import { LLMClient } from '../infrastructure/llm-client.ts';
 
 describe('ContentExtractor', () => {
   const testConfig = { enable: true, baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };

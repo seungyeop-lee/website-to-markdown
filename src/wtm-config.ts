@@ -10,9 +10,16 @@ export class WtmConfig {
   readonly debug: boolean;
   readonly llm: LLMConfig;
 
+  private static readonly LLM_DEFAULTS: LLMConfig = {
+    enable: false,
+    baseUrl: '',
+    apiKey: '',
+    model: '',
+  };
+
   constructor(options: WtmOptions) {
     this.debug = options.debug ?? false;
-    this.llm = options.llm;
+    this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options.llm };
 
     if (this.llm.enable) {
       this.validateLLMConfig(this.llm);

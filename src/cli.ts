@@ -49,11 +49,11 @@ Environment:
   try {
     logger.info(`변환 중: ${url}`);
     const markdown = await wtm(url, {
-      llm: {
-        enable: !noLlm,
-        baseUrl: process.env.OPENAI_API_BASE_URL || '',
-        apiKey: process.env.OPENAI_API_KEY || '',
-        model: process.env.OPENAI_API_MODEL || '',
+      llm: noLlm ? undefined : {
+        enable: true,
+        baseUrl: process.env.OPENAI_API_BASE_URL,
+        apiKey: process.env.OPENAI_API_KEY,
+        model: process.env.OPENAI_API_MODEL,
       },
       debug,
     });

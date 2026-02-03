@@ -2,7 +2,7 @@ import { test, expect, describe } from 'bun:test';
 import {
   REMOVE_SELECTORS,
   estimateTokens,
-} from '../src/utils/html-preprocessor.ts';
+} from './html-preprocessor.ts';
 
 describe('html-preprocessor', () => {
   test('REMOVE_SELECTORS: 필수 셀렉터 포함', () => {
