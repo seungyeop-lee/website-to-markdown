@@ -7,7 +7,7 @@ describe('LLMClient', () => {
   test('API 키 없으면 에러', async () => {
     const client = new LLMClient({ baseUrl: '', apiKey: '', model: '' });
 
-    expect(client.call('<div>test</div>')).rejects.toThrow(
+    expect(client.call('# test')).rejects.toThrow(
       'OPENAI_API_KEY 환경변수가 설정되지 않았습니다.'
     );
   });
@@ -21,7 +21,7 @@ describe('LLMClient', () => {
 
     try {
       const client = new LLMClient(testConfig);
-      await expect(client.call('<div>test</div>')).rejects.toThrow('LLM API 오류: 500');
+      await expect(client.call('# test')).rejects.toThrow('LLM API 오류: 500');
     } finally {
       globalThis.fetch = originalFetch;
     }
@@ -43,7 +43,7 @@ describe('LLMClient', () => {
 
     try {
       const client = new LLMClient(testConfig);
-      const result = await client.call('<div>Hello</div>');
+      const result = await client.call('# Hello');
       expect(result).toBe('# Hello World');
     } finally {
       globalThis.fetch = originalFetch;

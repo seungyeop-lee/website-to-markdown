@@ -24,37 +24,4 @@ export function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-/**
- * HTML을 청킹 (100k 토큰 기준)
- */
-export function chunkHtml(html: string, maxTokens: number = 100000): string[] {
-  const maxChars = maxTokens * 4;
-
-  if (html.length <= maxChars) {
-    return [html];
-  }
-
-  const chunks: string[] = [];
-  let remaining = html;
-
-  while (remaining.length > 0) {
-    if (remaining.length <= maxChars) {
-      chunks.push(remaining);
-      break;
-    }
-
-    // 태그가 잘리지 않도록 마지막 닫는 태그 위치 찾기
-    let splitPoint = maxChars;
-    const lastTagEnd = remaining.lastIndexOf('>', splitPoint);
-    if (lastTagEnd > maxChars * 0.8) {
-      splitPoint = lastTagEnd + 1;
-    }
-
-    chunks.push(remaining.slice(0, splitPoint));
-    remaining = remaining.slice(splitPoint);
-  }
-
-  return chunks;
-}
-
 export { REMOVE_SELECTORS };

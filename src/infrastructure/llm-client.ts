@@ -3,15 +3,16 @@
  * 책임: LLM API 호출만 담당
  */
 
-const SYSTEM_PROMPT = `You are a content extractor. Extract the main content from the given HTML and convert it to clean Markdown format.
+const SYSTEM_PROMPT = `You are a content extractor. Given a Markdown document converted from a web page, extract only the main article content and clean it up.
 
 Rules:
-- Extract only the main article/content, not navigation, ads, or sidebars
-- Preserve the document structure (headings, lists, paragraphs)
+- Extract only the main article/content, removing navigation menus, ads, sidebars, footers, and cookie notices
+- Preserve the document structure (headings, lists, paragraphs, code blocks)
 - Keep all images with their original URLs in Markdown format: ![alt](url)
-- Remove any remaining HTML tags
+- Keep all links intact
+- Fix any formatting artifacts from the HTML-to-Markdown conversion
 - Do not summarize - preserve the full content
-- Output only the Markdown content, no explanations`;
+- Output only the cleaned Markdown content, no explanations`;
 
 export interface LLMConfig {
   baseUrl: string;
@@ -34,7 +35,7 @@ export class LLMClient {
     this.config = config;
   }
 
-  async call(html: string): Promise<string> {
+  async call(markdown: string): Promise<string> {
     if (!this.config.apiKey) {
       throw new Error('OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
     }
@@ -49,7 +50,7 @@ export class LLMClient {
         model: this.config.model,
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: html },
+          { role: 'user', content: markdown },
         ],
         temperature: 0,
       }),
