@@ -3,10 +3,8 @@
  */
 
 export interface PageMetadata {
-  title: string;
-  description: string;
-  ogImage: string;
   url: string;
+  origin: string;
 }
 
 export interface RenderResult {

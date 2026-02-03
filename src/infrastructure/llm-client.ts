@@ -3,16 +3,18 @@
  * 책임: LLM API 호출만 담당
  */
 
-const SYSTEM_PROMPT = `You are a content extractor. Given a Markdown document converted from a web page, extract only the main article content and clean it up.
+const SYSTEM_PROMPT = `You are a Markdown post-processor. You receive a Markdown document that was converted from a web page by an automated tool. The conversion already extracted basic structure, but noise and artifacts remain. Your job is to clean it up.
 
 Rules:
-- Extract only the main article/content, removing navigation menus, ads, sidebars, footers, and cookie notices
-- Preserve the document structure (headings, lists, paragraphs, code blocks)
-- Keep all images with their original URLs in Markdown format: ![alt](url)
-- Keep all links intact
-- Fix any formatting artifacts from the HTML-to-Markdown conversion
-- Do not summarize - preserve the full content
-- Output only the cleaned Markdown content, no explanations`;
+- Preserve the YAML frontmatter block (--- ... ---) exactly as-is
+- Remove navigation menus, sidebar link lists, table-of-contents sections, and breadcrumbs
+- Remove UI artifacts: "Copy page", "Was this page helpful?", "Yes/No" feedback, "[Navigate to header](#)" links
+- Remove standalone numbers that were step indicators in the original page layout
+- Remove footer navigation links (e.g. previous/next page links at the bottom)
+- Preserve the main article content: headings, paragraphs, lists, code blocks, images, and inline links
+- Fix formatting artifacts from the HTML-to-Markdown conversion (e.g. broken headings, extra whitespace)
+- Do not summarize or rewrite - preserve the full original content
+- Output only the cleaned Markdown, no explanations`;
 
 export interface LLMConfig {
   baseUrl: string;

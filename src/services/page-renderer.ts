@@ -4,10 +4,8 @@
  * 협력자: BrowserManager
  */
 
-import type { Page } from 'playwright';
-import type { PageMetadata, RenderResult } from '../types.ts';
-import type { BrowserManager } from '../infrastructure/browser-manager.ts';
-import { REMOVE_SELECTORS } from '../utils/html-preprocessor.ts';
+import type {PageMetadata, RenderResult} from '../types.ts';
+import type {BrowserManager} from '../infrastructure/browser-manager.ts';
 
 export class PageRenderer {
   constructor(private browserManager: BrowserManager) {}
@@ -26,37 +24,15 @@ export class PageRenderer {
         console.warn(`[warn] networkidle timeout: ${url}`);
       });
 
-      const metadata = await this.extractMetadata(page, url);
-
-      await page.evaluate((selectors: string[]) => {
-        for (const selector of selectors) {
-          document.querySelectorAll(selector).forEach((el) => el.remove());
-        }
-      }, REMOVE_SELECTORS);
-
-      const html = await page.content();
-
-      return { html, metadata };
+      return { html: await page.content(), metadata: await this.extractMetadata(url) };
     } finally {
       await page.close();
     }
   }
 
-  private async extractMetadata(page: Page, url: string): Promise<PageMetadata> {
-    const title = await page.title();
-
-    const description = await page.evaluate(() => {
-      const meta =
-        document.querySelector('meta[name="description"]') ||
-        document.querySelector('meta[property="og:description"]');
-      return meta?.getAttribute('content') || '';
-    });
-
-    const ogImage = await page.evaluate(() => {
-      const meta = document.querySelector('meta[property="og:image"]');
-      return meta?.getAttribute('content') || '';
-    });
-
-    return { title, description, ogImage, url };
+  private async extractMetadata(url: string): Promise<PageMetadata> {
+    const urlObj = new URL(url);
+    const origin = `${urlObj.protocol}//${urlObj.host}`;
+    return {url, origin};
   }
 }
