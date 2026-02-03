@@ -17,6 +17,7 @@ Rules:
 - Output only the cleaned Markdown, no explanations`;
 
 export interface LLMConfig {
+  enable: boolean;
   baseUrl: string;
   apiKey: string;
   model: string;
@@ -30,7 +31,17 @@ interface LLMResponse {
   }>;
 }
 
-export class LLMClient {
+export interface MarkdownRefiner {
+  call(markdown: string): Promise<string>;
+}
+
+export class NullRefiner implements MarkdownRefiner {
+  async call(markdown: string): Promise<string> {
+    return markdown;
+  }
+}
+
+export class LLMClient implements MarkdownRefiner {
   private config: LLMConfig;
 
   constructor(config: LLMConfig) {

@@ -43,6 +43,9 @@ OPENAI_API_MODEL=gpt-4o-mini
 # 실행
 bunx @seungyeop-lee/website-to-markdown https://example.com/article
 
+# LLM 후처리 없이 기본 마크다운 변환만 수행
+bunx @seungyeop-lee/website-to-markdown --no-llm https://example.com/article
+
 # 파일로 저장
 bunx @seungyeop-lee/website-to-markdown https://example.com/article > output.md
 ```
@@ -63,11 +66,23 @@ wtm https://example.com/article > output.md
 ```ts
 import { wtm } from '@seungyeop-lee/website-to-markdown';
 
+// LLM 후처리 활성화
 const markdown = await wtm('https://example.com/article', {
   llm: {
+    enable: true,
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
+  },
+});
+
+// LLM 후처리 비활성화 (기본 마크다운 변환만 수행)
+const markdown = await wtm('https://example.com/article', {
+  llm: {
+    enable: false,
+    baseUrl: '',
+    apiKey: '',
+    model: '',
   },
 });
 ```
@@ -76,9 +91,9 @@ const markdown = await wtm('https://example.com/article', {
 
 | 변수 | 설명 | 필수 |
 |------|------|:----:|
-| `OPENAI_API_BASE_URL` | OpenAI API 베이스 URL | O |
-| `OPENAI_API_KEY` | OpenAI API 키 | O |
-| `OPENAI_API_MODEL` | 모델명 | O |
+| `OPENAI_API_BASE_URL` | OpenAI API 베이스 URL | `--no-llm` 미사용 시 |
+| `OPENAI_API_KEY` | OpenAI API 키 | `--no-llm` 미사용 시 |
+| `OPENAI_API_MODEL` | 모델명 | `--no-llm` 미사용 시 |
 
 ---
 

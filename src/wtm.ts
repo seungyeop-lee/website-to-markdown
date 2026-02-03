@@ -4,7 +4,7 @@
  */
 
 import { BrowserManager } from './infrastructure/browser-manager.ts';
-import { LLMClient } from './infrastructure/llm-client.ts';
+import { LLMClient, NullRefiner } from './infrastructure/llm-client.ts';
 import { logger } from './infrastructure/logger.ts';
 import { PageRenderer } from './services/page-renderer.ts';
 import { ContentExtractor } from './services/content-extractor.ts';
@@ -25,14 +25,14 @@ export async function wtm(url: string, options: WtmOptions): Promise<string> {
   logger.init(options.debug ?? false);
 
   const browserManager = new BrowserManager();
-  const llmClient = new LLMClient(options.llm);
+  const refiner = options.llm.enable ? new LLMClient(options.llm) : new NullRefiner();
   const pageRenderer = new PageRenderer(browserManager);
-  const contentExtractor = new ContentExtractor(llmClient);
+  const contentExtractor = new ContentExtractor(refiner);
 
   try {
     logger.debug(`PageRenderer.render 시작: ${url}`);
     const { html, metadata } = await pageRenderer.render(url);
-    logger.debug(`PageRenderer.render 완료 (html: ${html.length}자, title: "${metadata.title}")`);
+    logger.debug(`PageRenderer.render 완료 (html: ${html.length}자")`);
 
     return await contentExtractor.extract(html, metadata);
   } finally {
