@@ -5,6 +5,7 @@
  */
 
 import { wtm } from './wtm.ts';
+import { logger } from './infrastructure/logger.ts';
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -14,10 +15,15 @@ async function main(): Promise<void> {
 wtm - 웹 사이트를 Markdown으로 변환
 
 Usage:
-  bun src/cli.ts <URL>
+  bun src/cli.ts [options] <URL>
+
+Options:
+  --debug    파이프라인 각 스텝의 시작/종료 및 결과물 출력
+  --help, -h 도움말 표시
 
 Example:
   bun src/cli.ts https://example.com/article
+  bun src/cli.ts --debug https://example.com/article
 
 Environment:
   OPENAI_API_BASE_URL  OpenAI API 베이스 URL (필수)
@@ -27,16 +33,25 @@ Environment:
     process.exit(args.length === 0 ? 1 : 0);
   }
 
-  const url = args[0]!;
+  const debug = args.includes('--debug');
+  const url = args.find((arg) => !arg.startsWith('--'))!;
+
+  if (!url) {
+    console.error('[ERROR] URL을 지정해 주세요.');
+    process.exit(1);
+  }
+
+  logger.init(debug);
 
   try {
-    console.error(`[INFO] 변환 중: ${url}`);
+    logger.info(`변환 중: ${url}`);
     const markdown = await wtm(url, {
       llm: {
         baseUrl: process.env.OPENAI_API_BASE_URL || '',
         apiKey: process.env.OPENAI_API_KEY || '',
         model: process.env.OPENAI_API_MODEL || '',
       },
+      debug,
     });
     console.log(markdown);
   } catch (error) {

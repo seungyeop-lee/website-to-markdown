@@ -13,3 +13,8 @@ export interface RenderResult {
   html: string;
   metadata: PageMetadata;
 }
+
+export interface WtmOptions {
+  llm: import('./infrastructure/llm-client.ts').LLMConfig;
+  debug?: boolean;
+}

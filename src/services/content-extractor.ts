@@ -6,6 +6,7 @@
 
 import { htmlToMarkdown } from 'mdream';
 import type { LLMClient } from '../infrastructure/llm-client.ts';
+import { logger } from '../infrastructure/logger.ts';
 import { formatMetadataHeader } from '../utils/markdown-formatter.ts';
 import type { PageMetadata } from '../types.ts';
 
@@ -15,8 +16,13 @@ export class ContentExtractor {
   async extract(html: string, metadata: PageMetadata): Promise<string> {
     const header = formatMetadataHeader(metadata);
 
+    logger.debug('mdream 변환 시작');
     const rawMarkdown = htmlToMarkdown(html);
+    logger.debug(`mdream 변환 완료 (markdown: ${rawMarkdown.length}자)\n--- mdream 결과 ---\n${rawMarkdown}\n---`);
+
+    logger.debug('LLM 정제 시작');
     const cleanedMarkdown = await this.llmClient.call(rawMarkdown);
+    logger.debug(`LLM 정제 완료 (markdown: ${cleanedMarkdown.length}자)\n--- LLM 결과 ---\n${cleanedMarkdown}\n---`);
 
     return header + cleanedMarkdown;
   }
