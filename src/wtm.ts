@@ -8,6 +8,7 @@ import { LLMClient, NullRefiner } from './infrastructure/llm-client.ts';
 import { logger } from './infrastructure/logger.ts';
 import { PageRenderer } from './services/page-renderer.ts';
 import { ContentExtractor } from './services/content-extractor.ts';
+import { WtmConfig } from './wtm-config.ts';
 import type { WtmOptions } from './types.ts';
 
 export type { WtmOptions };
@@ -22,10 +23,11 @@ export async function wtm(url: string, options: WtmOptions): Promise<string> {
     throw new Error(`유효하지 않은 URL입니다: ${url}`);
   }
 
-  logger.init(options.debug ?? false);
+  const config = new WtmConfig(options);
+  logger.init(config.debug);
 
   const browserManager = new BrowserManager();
-  const refiner = options.llm.enable ? new LLMClient(options.llm) : new NullRefiner();
+  const refiner = config.llm.enable ? new LLMClient(config.llm) : new NullRefiner();
   const pageRenderer = new PageRenderer(browserManager);
   const contentExtractor = new ContentExtractor(refiner);
 
