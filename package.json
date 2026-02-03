@@ -1,12 +1,43 @@
 {
-  "name": "website_to_markdown",
-  "module": "index.ts",
+  "name": "@seungyeop-lee/website-to-markdown",
+  "version": "0.0.1",
   "type": "module",
-  "private": true,
+  "module": "dist/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
+  "bin": {
+    "wtm": "src/cli.ts"
+  },
+  "scripts": {
+    "postinstall": "bunx playwright install chromium",
+    "start": "bun src/cli.ts",
+    "test": "bun test",
+    "build": "bun build src/index.ts --outdir dist --target node --format esm --external playwright --external playwright-extra --external puppeteer-extra-plugin-stealth",
+    "build:types": "tsc -p tsconfig.build.json"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seungyeop-lee/website-to-markdown.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "playwright": "^1.58.1",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
