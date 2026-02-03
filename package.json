@@ -20,7 +20,7 @@
     "postinstall": "bunx playwright install chromium",
     "start": "bun src/cli.ts",
     "test": "bun test",
-    "build": "bun build src/index.ts src/cli.ts --outdir dist --target node --format esm --external playwright --external playwright-extra --external puppeteer-extra-plugin-stealth",
+    "build": "bun build src/index.ts src/cli.ts --outdir dist --target node --format esm --minify --external playwright --external playwright-extra --external puppeteer-extra-plugin-stealth",
     "build:types": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
