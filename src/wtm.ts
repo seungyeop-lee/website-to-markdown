@@ -36,7 +36,7 @@ export async function wtm(url: string, options?: WtmOptions): Promise<string> {
   try {
     logger.debug(`PageRenderer.render 시작: ${url}`);
     const { html, metadata } = await pageRenderer.render(url);
-    logger.debug(`PageRenderer.render 완료 (html: ${html.length}자")`);
+    logger.debug(`PageRenderer.render 완료 (html: ${html.length}자)\n--- render 결과 ---\n${html}\n---`);
 
     const markdown = await contentExtractor.extract(html, metadata);
 
