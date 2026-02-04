@@ -4,7 +4,7 @@
  * 협력자: MarkdownRefiner
  */
 
-import {htmlToMarkdown} from 'mdream';
+import {htmlToMarkdown, TagIdMap} from 'mdream';
 import type {MarkdownRefiner} from '../infrastructure/llm-refiner.ts';
 import {logger} from '../infrastructure/logger.ts';
 import type {PageMetadata} from '../types.ts';
@@ -26,7 +26,22 @@ export class ContentExtractor {
         }),
         isolateMainPlugin(),
         tailwindPlugin(),
-        filterPlugin()
+        filterPlugin({
+          exclude: [
+            TagIdMap.form,
+            TagIdMap.fieldset,
+            TagIdMap.object,
+            TagIdMap.embed,
+            TagIdMap.figure,
+            TagIdMap.footer,
+            TagIdMap.aside,
+            TagIdMap.input,
+            TagIdMap.textarea,
+            TagIdMap.select,
+            TagIdMap.button,
+            TagIdMap.nav,
+          ],
+        })
       ]
     });
     logger.debug(`mdream 변환 완료 (markdown: ${rawMarkdown.length}자)\n--- mdream 결과 ---\n${rawMarkdown}\n---`);
