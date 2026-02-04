@@ -4,7 +4,8 @@
  */
 
 import { BrowserManager } from './infrastructure/browser-manager.ts';
-import { LLMClient, NullRefiner } from './infrastructure/llm-client.ts';
+import { LLMClient, NullRefiner } from './infrastructure/llm-refiner.ts';
+import { LLMTranslator, NullTranslator } from './infrastructure/llm-translator.ts';
 import { logger } from './infrastructure/logger.ts';
 import { PageRenderer } from './services/page-renderer.ts';
 import { ContentExtractor } from './services/content-extractor.ts';
@@ -28,6 +29,7 @@ export async function wtm(url: string, options?: WtmOptions): Promise<string> {
 
   const browserManager = new BrowserManager();
   const refiner = config.llm.enable ? new LLMClient(config.llm) : new NullRefiner();
+  const translator = config.translate ? new LLMTranslator(config.llm, config.translate) : new NullTranslator();
   const pageRenderer = new PageRenderer(browserManager);
   const contentExtractor = new ContentExtractor(refiner);
 
@@ -36,7 +38,13 @@ export async function wtm(url: string, options?: WtmOptions): Promise<string> {
     const { html, metadata } = await pageRenderer.render(url);
     logger.debug(`PageRenderer.render 완료 (html: ${html.length}자")`);
 
-    return await contentExtractor.extract(html, metadata);
+    const markdown = await contentExtractor.extract(html, metadata);
+
+    logger.debug('번역 시작');
+    const translated = await translator.call(markdown);
+    logger.debug(`번역 완료 (markdown: ${translated.length}자)\n--- 번역 결과 ---\n${translated}\n---`);
+
+    return translated;
   } finally {
     await browserManager.close();
   }

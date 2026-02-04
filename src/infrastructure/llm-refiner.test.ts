@@ -1,5 +1,5 @@
 import { test, expect, describe, mock } from 'bun:test';
-import { LLMClient } from './llm-client.ts';
+import { LLMClient } from './llm-refiner.ts';
 
 describe('LLMClient', () => {
   const testConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };

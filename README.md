@@ -9,6 +9,7 @@
 - SPA/JavaScript 렌더링 사이트 지원 (Playwright + Stealth 플러그인)
 - [mdream](https://github.com/nichochar/mdream) 기반 HTML → Markdown 변환 (본문 추출, 노이즈 필터링, Tailwind 처리)
 - LLM 후처리를 통한 마크다운 정제 (선택 사항)
+- LLM 기반 다국어 번역 (`--translate <lang>`)
 - YAML frontmatter 자동 생성 (url, createdAt)
 - `--debug` 모드로 파이프라인 각 스텝 로깅
 
@@ -47,6 +48,12 @@ bunx @seungyeop-lee/website-to-markdown https://example.com/article
 # LLM 후처리 없이 기본 마크다운 변환만 수행
 bunx @seungyeop-lee/website-to-markdown --no-llm https://example.com/article
 
+# 마크다운을 한국어로 번역
+bunx @seungyeop-lee/website-to-markdown --translate ko https://example.com/article
+
+# LLM 정제 없이 번역만 수행
+bunx @seungyeop-lee/website-to-markdown --no-llm --translate ko https://example.com/article
+
 # 디버그 모드 (파이프라인 각 스텝 로깅)
 bunx @seungyeop-lee/website-to-markdown --debug https://example.com/article
 
@@ -63,6 +70,8 @@ bun install -g @seungyeop-lee/website-to-markdown
 ```bash
 wtm https://example.com/article
 wtm --no-llm https://example.com/article
+wtm --translate ko https://example.com/article
+wtm --no-llm --translate ko https://example.com/article
 wtm --debug https://example.com/article
 wtm https://example.com/article > output.md
 ```
@@ -85,6 +94,28 @@ const markdown = await wtm('https://example.com/article', {
 // LLM 후처리 비활성화 (기본 마크다운 변환만 수행)
 const markdown = await wtm('https://example.com/article');
 
+// 한국어로 번역 (LLM 정제 + 번역)
+const markdown = await wtm('https://example.com/article', {
+  translate: 'ko',
+  llm: {
+    enable: true,
+    baseUrl: 'https://api.openai.com/v1',
+    apiKey: 'your-api-key',
+    model: 'gpt-4o-mini',
+  },
+});
+
+// LLM 정제 없이 번역만 수행
+const markdown = await wtm('https://example.com/article', {
+  translate: 'ko',
+  llm: {
+    enable: false,
+    baseUrl: 'https://api.openai.com/v1',
+    apiKey: 'your-api-key',
+    model: 'gpt-4o-mini',
+  },
+});
+
 // 디버그 모드
 const markdown = await wtm('https://example.com/article', {
   debug: true,
@@ -101,9 +132,9 @@ const markdown = await wtm('https://example.com/article', {
 
 | 변수 | 설명 | 필수 |
 |------|------|:----:|
-| `OPENAI_API_BASE_URL` | OpenAI API 베이스 URL | `--no-llm` 미사용 시 |
-| `OPENAI_API_KEY` | OpenAI API 키 | `--no-llm` 미사용 시 |
-| `OPENAI_API_MODEL` | 모델명 | `--no-llm` 미사용 시 |
+| `OPENAI_API_BASE_URL` | OpenAI API 베이스 URL | LLM 정제 또는 번역 사용 시 |
+| `OPENAI_API_KEY` | OpenAI API 키 | LLM 정제 또는 번역 사용 시 |
+| `OPENAI_API_MODEL` | 모델명 | LLM 정제 또는 번역 사용 시 |
 
 ---
 

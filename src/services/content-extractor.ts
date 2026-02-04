@@ -5,7 +5,7 @@
  */
 
 import {htmlToMarkdown} from 'mdream';
-import type {MarkdownRefiner} from '../infrastructure/llm-client.ts';
+import type {MarkdownRefiner} from '../infrastructure/llm-refiner.ts';
 import {logger} from '../infrastructure/logger.ts';
 import type {PageMetadata} from '../types.ts';
 import {filterPlugin, frontmatterPlugin, isolateMainPlugin, tailwindPlugin} from "mdream/plugins";

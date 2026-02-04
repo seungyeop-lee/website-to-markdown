@@ -61,6 +61,39 @@ describe('WtmConfig', () => {
     expect(config.llm.model).toBe('');
   });
 
+  test('translate 미지정 시 undefined', () => {
+    const config = new WtmConfig();
+
+    expect(config.translate).toBeUndefined();
+  });
+
+  test('translate 지정 시 해당 값 사용', () => {
+    const config = new WtmConfig({
+      translate: 'ko',
+      llm: { enable: false, baseUrl: 'http://localhost', apiKey: 'key', model: 'gpt-4' },
+    });
+
+    expect(config.translate).toBe('ko');
+  });
+
+  test('translate만 지정하고 LLM config 누락 시 에러', () => {
+    const options: WtmOptions = {
+      translate: 'ko',
+      llm: { enable: false, baseUrl: '', apiKey: '', model: '' },
+    };
+
+    expect(() => new WtmConfig(options)).toThrow('baseUrl, apiKey, model');
+  });
+
+  test('--no-llm + translate 지정 시 LLM config 있으면 통과', () => {
+    const options: WtmOptions = {
+      translate: 'ko',
+      llm: { enable: false, baseUrl: 'http://localhost', apiKey: 'key', model: 'gpt-4' },
+    };
+
+    expect(() => new WtmConfig(options)).not.toThrow();
+  });
+
   test('정상 입력 시 프로퍼티 접근 가능', () => {
     const options: WtmOptions = {
       llm: { enable: true, baseUrl: 'http://localhost', apiKey: 'key', model: 'gpt-4' },
