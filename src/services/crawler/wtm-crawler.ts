@@ -42,10 +42,13 @@ export class WtmCrawler {
     const succeeded: string[] = [];
     const failed: { url: string; error: string }[] = [];
     const skipped: string[] = [];
+    let processedCount = 0;
 
     // BFS 큐: { url, depth }
     let queue: { url: string; depth: number }[] = [{ url: startUrl, depth: 0 }];
     visited.add(startUrl);
+
+    logger.debug(`크롤링 설정: maxDepth=${this.maxDepth}, concurrency=${this.concurrency}, scopeLevels=${this.scopeLevels}`);
 
     try {
       while (queue.length > 0) {
@@ -53,9 +56,11 @@ export class WtmCrawler {
         const batch = queue.splice(0, this.concurrency);
         const nextQueue: { url: string; depth: number }[] = [];
 
+        logger.debug(`배치 처리 시작: ${batch.length}개, 남은 큐: ${queue.length}개`);
+
         const results = await Promise.allSettled(
           batch.map(async ({ url, depth }) => {
-            logger.info(`크롤링 [${depth}/${this.maxDepth}]: ${url}`);
+            logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.maxDepth}): ${url}`);
             const result = await writer.write(url);
             return { url, depth, links: result.metadata.links };
           }),
@@ -70,28 +75,42 @@ export class WtmCrawler {
             const { links } = settledResult.value;
 
             if (depth < this.maxDepth) {
+              let added = 0;
+              let duplicated = 0;
+              let outOfScope = 0;
+
               for (const link of links) {
-                if (visited.has(link)) continue;
+                if (visited.has(link)) {
+                  duplicated++;
+                  continue;
+                }
                 visited.add(link);
 
                 if (!scopeFilter.isInScope(link)) {
                   skipped.push(link);
+                  outOfScope++;
                   continue;
                 }
 
                 nextQueue.push({ url: link, depth: depth + 1 });
+                added++;
               }
+
+              logger.debug(`링크 분석 (${url}): 발견 ${links.length}, 추가 ${added}, 중복 ${duplicated}, scope 밖 ${outOfScope}`);
+            } else {
+              logger.debug(`최대 depth 도달, 링크 수집 스킵: ${url}`);
             }
           } else {
             const error = settledResult.reason instanceof Error
               ? settledResult.reason.message
               : String(settledResult.reason);
             failed.push({ url, error });
-            logger.info(`크롤링 실패: ${url} - ${error}`);
+            logger.info(`크롤링 실패 #${processedCount} : ${url} - ${error}`);
           }
         }
 
         queue = [...queue, ...nextQueue];
+        logger.debug(`배치 완료: 성공 ${succeeded.length}, 실패 ${failed.length}, 대기 큐 ${queue.length}개`);
       }
     } finally {
       await browserManager.close();
@@ -111,12 +130,13 @@ export class WtmCrawler {
 
     try {
       // concurrency만큼 배치 처리
+      let processedCount = 0;
       for (let i = 0; i < urls.length; i += this.concurrency) {
         const batch = urls.slice(i, i + this.concurrency);
 
         const results = await Promise.allSettled(
           batch.map(async (url) => {
-            logger.info(`변환 중: ${url}`);
+            logger.info(`변환 #${++processedCount}/${urls.length}: ${url}`);
             await writer.write(url);
             return url;
           }),
