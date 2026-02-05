@@ -1,12 +1,12 @@
 import { test, expect, describe, mock, beforeEach } from 'bun:test';
 import { WtmCrawler } from './wtm-crawler.ts';
-import type { WtmResult, WtmOptions } from '../types.ts';
+import type { WtmResult, WtmOptions } from '../../types.ts';
 
 // BrowserManager mock: BrowserManager import 시 close가 호출되므로 mock 필요
 const mockClose = mock(() => Promise.resolve());
 const mockGetBrowser = mock(() => Promise.resolve({}));
 
-mock.module('../infrastructure/browser-manager.ts', () => ({
+mock.module('../../infrastructure/browser-manager.ts', () => ({
   BrowserManager: class {
     close = mockClose;
     getBrowser = mockGetBrowser;

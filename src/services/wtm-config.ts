@@ -3,8 +3,8 @@
  * 책임: WtmOptions의 validation + 기본값 적용
  */
 
-import type { LLMConfig } from './infrastructure/llm-refiner.ts';
-import type { WtmOptions } from './types.ts';
+import type { LLMConfig } from '../infrastructure/llm-refiner.ts';
+import type { WtmOptions } from '../types.ts';
 
 export class WtmConfig {
   readonly debug: boolean;

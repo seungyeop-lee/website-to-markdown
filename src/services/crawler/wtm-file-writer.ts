@@ -3,8 +3,8 @@
  * 책임: wtm() 호출 + markdown을 파일로 저장
  */
 
-import { logger } from '../infrastructure/logger.ts';
-import type { WtmOptions, WtmResult } from '../types.ts';
+import { logger } from '../../infrastructure/logger.ts';
+import type { WtmOptions, WtmResult } from '../../types.ts';
 
 export type WtmFn = (url: string, options?: WtmOptions) => Promise<WtmResult>;
 

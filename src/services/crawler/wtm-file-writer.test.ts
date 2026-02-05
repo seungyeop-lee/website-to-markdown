@@ -1,6 +1,6 @@
 import { test, expect, describe, mock, beforeEach } from 'bun:test';
 import { WtmFileWriter } from './wtm-file-writer.ts';
-import type { WtmResult } from '../types.ts';
+import type { WtmResult } from '../../types.ts';
 
 describe('WtmFileWriter', () => {
   const mockResult: WtmResult = {

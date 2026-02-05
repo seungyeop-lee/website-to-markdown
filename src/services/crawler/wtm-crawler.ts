@@ -3,9 +3,9 @@
  * 책임: 다중 페이지 크롤링 오케스트레이션
  */
 
-import { BrowserManager } from '../infrastructure/browser-manager.ts';
-import { logger } from '../infrastructure/logger.ts';
-import type { CrawlOptions, WtmOptions } from '../types.ts';
+import { BrowserManager } from '../../infrastructure/browser-manager.ts';
+import { logger } from '../../infrastructure/logger.ts';
+import type { CrawlOptions, WtmOptions } from '../../types.ts';
 import { UrlScopeFilter } from './url-scope-filter.ts';
 import { WtmFileWriter, type WtmFn } from './wtm-file-writer.ts';
 
