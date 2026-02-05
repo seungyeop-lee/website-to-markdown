@@ -5,8 +5,8 @@
  */
 
 import type {Page} from 'playwright';
-import type {PageMetadata, RenderResult} from '../types.ts';
-import type {BrowserManager} from '../infrastructure/browser-manager.ts';
+import type {PageMetadata, RenderResult} from '../../types.ts';
+import type {BrowserManager} from '../../infrastructure/browser-manager.ts';
 
 export class PageRenderer {
   constructor(private browserManager: BrowserManager) {}

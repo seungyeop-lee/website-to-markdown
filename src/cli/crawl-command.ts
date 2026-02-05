@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { wtm } from '../services/wtm.ts';
+import { wtm } from '../services/converter/wtm.ts';
 import { WtmCrawler } from '../services/crawler/wtm-crawler.ts';
 import { logger } from '../infrastructure/logger.ts';
 import { buildWtmOptions, ENV_HELP, type CommonOptions } from './options.ts';

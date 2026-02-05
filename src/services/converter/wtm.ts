@@ -3,14 +3,14 @@
  * 책임: DI 조립 → 파이프라인 실행 → 리소스 정리
  */
 
-import { BrowserManager } from '../infrastructure/browser-manager.ts';
-import { LLMClient, NullRefiner } from '../infrastructure/llm-refiner.ts';
-import { LLMTranslator, NullTranslator } from '../infrastructure/llm-translator.ts';
-import { logger } from '../infrastructure/logger.ts';
-import { PageRenderer } from './page-renderer.ts';
-import { ContentExtractor } from './content-extractor.ts';
+import { BrowserManager } from '../../infrastructure/browser-manager.ts';
+import { LLMClient, NullRefiner } from '../../infrastructure/llm-refiner.ts';
+import { LLMTranslator, NullTranslator } from '../../infrastructure/llm-translator.ts';
+import { logger } from '../../infrastructure/logger.ts';
+import { PageRenderer } from '../base/page-renderer.ts';
+import { ContentExtractor } from '../base/content-extractor.ts';
 import { WtmConfig } from './wtm-config.ts';
-import type { WtmOptions, WtmResult } from '../types.ts';
+import type { WtmOptions, WtmResult } from '../../types.ts';
 
 export type { WtmOptions, WtmResult };
 

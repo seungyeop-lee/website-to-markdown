@@ -1,6 +1,6 @@
 import { test, expect, describe } from 'bun:test';
 import { WtmConfig } from './wtm-config.ts';
-import type { WtmOptions } from '../types.ts';
+import type { WtmOptions } from '../../types.ts';
 
 describe('WtmConfig', () => {
   test('옵션 미전달 시 기본값 적용', () => {
