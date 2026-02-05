@@ -6,6 +6,7 @@
 import { BrowserManager } from '../../infrastructure/browser-manager.ts';
 import { logger } from '../../infrastructure/logger.ts';
 import type { CrawlOptions, WtmOptions } from '../../types.ts';
+import { normalizeUrl } from '../../utils/url-normalizer.ts';
 import { UrlScopeFilter } from './url-scope-filter.ts';
 import { WtmFileWriter, type WtmFn } from './wtm-file-writer.ts';
 
@@ -48,7 +49,7 @@ export class WtmCrawler {
 
     // BFS 큐: { url, depth }
     let queue: { url: string; depth: number }[] = [{ url: startUrl, depth: 0 }];
-    visited.add(startUrl);
+    visited.add(normalizeUrl(startUrl));
 
     logger.debug(`크롤링 설정: maxLinkDepth=${this.maxLinkDepth}, maxPathDepth=${this.maxPathDepth}, concurrency=${this.concurrency}, scopeLevels=${this.scopeLevels}`);
 
@@ -82,11 +83,12 @@ export class WtmCrawler {
               let outOfScope = 0;
 
               for (const link of links) {
-                if (visited.has(link)) {
+                const normalizedLink = normalizeUrl(link);
+                if (visited.has(normalizedLink)) {
                   duplicated++;
                   continue;
                 }
-                visited.add(link);
+                visited.add(normalizedLink);
 
                 if (!scopeFilter.isInScope(link)) {
                   skipped.push(link);
