@@ -4,7 +4,7 @@
  * 협력자: BrowserManager
  */
 
-import type {Frame, Page} from 'playwright';
+import type {Page} from 'playwright';
 import type {PageMetadata, RenderResult} from '../types.ts';
 import type {BrowserManager} from '../infrastructure/browser-manager.ts';
 
@@ -25,7 +25,7 @@ export class PageRenderer {
         console.warn(`[warn] networkidle timeout: ${url}`);
       });
 
-      const html = await this.getContentFromRichestFrame(page);
+      const html = await this.getMergedFramesContent(page);
 
       return { html, metadata: await this.extractMetadata(url) };
     } finally {
@@ -33,7 +33,7 @@ export class PageRenderer {
     }
   }
 
-  private async getContentFromRichestFrame(page: Page): Promise<string> {
+  private async getMergedFramesContent(page: Page): Promise<string> {
     const allFrames = page.frames();
 
     // 프레임이 메인 하나뿐이면 그대로 반환
@@ -47,29 +47,37 @@ export class PageRenderer {
       }),
     );
 
-    // 모든 프레임에서 텍스트 길이 측정하여 가장 콘텐츠가 많은 프레임 선택
-    let richestFrame: Frame = page.mainFrame();
-    let maxLength = 0;
+    // 메인 프레임의 HTML을 베이스로 사용
+    const mainContent = await page.content();
 
-    for (const frame of allFrames) {
+    // 자식 프레임들의 body innerHTML 수집
+    const childContents: string[] = [];
+    const childFrames = allFrames.slice(1); // 메인 프레임 제외
+
+    for (const frame of childFrames) {
       try {
-        const textLength = await frame.evaluate(() => document.body?.innerText?.length ?? 0);
-        if (textLength > maxLength) {
-          maxLength = textLength;
-          richestFrame = frame;
+        const bodyHtml = await frame.evaluate(() => document.body?.innerHTML ?? '');
+        if (bodyHtml) {
+          childContents.push(bodyHtml);
         }
       } catch {
         // 접근 불가한 프레임 무시
       }
     }
 
-    // SPA 렌더링 대기
-    await richestFrame.waitForFunction(
-      () => (document.body?.innerText?.length ?? 0) > 100,
-      { timeout: 15000 },
-    ).catch(() => {});
+    if (childContents.length === 0) return mainContent;
 
-    return richestFrame.content();
+    // 메인 HTML의 </body> 앞에 자식 프레임 콘텐츠 삽입
+    const insertionPoint = mainContent.lastIndexOf('</body>');
+    if (insertionPoint === -1) {
+      return mainContent + childContents.join('\n');
+    }
+
+    return (
+      mainContent.slice(0, insertionPoint) +
+      childContents.join('\n') +
+      mainContent.slice(insertionPoint)
+    );
   }
 
   private async extractMetadata(url: string): Promise<PageMetadata> {
