@@ -22,7 +22,7 @@
 OPENAI_API_BASE_URL=https://api.openai.com/v1 \
 OPENAI_API_KEY=your-api-key \
 OPENAI_API_MODEL=gpt-4o-mini \
-bunx @seungyeop-lee/website-to-markdown https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert https://example.com/article
 ```
 
 ## 설치
@@ -44,25 +44,25 @@ OPENAI_API_MODEL=gpt-4o-mini
 
 ```bash
 # 실행
-bunx @seungyeop-lee/website-to-markdown https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert https://example.com/article
 
 # LLM 후처리 없이 기본 마크다운 변환만 수행
-bunx @seungyeop-lee/website-to-markdown --no-llm https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --no-llm https://example.com/article
 
 # 마크다운을 한국어로 번역
-bunx @seungyeop-lee/website-to-markdown --translate ko https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --translate ko https://example.com/article
 
 # LLM 정제 없이 번역만 수행
-bunx @seungyeop-lee/website-to-markdown --no-llm --translate ko https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --no-llm --translate ko https://example.com/article
 
 # 디버그 모드 (파이프라인 각 스텝 로깅)
-bunx @seungyeop-lee/website-to-markdown --debug https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --debug https://example.com/article
 
 # 파일로 저장 (stdout 리다이렉션)
-bunx @seungyeop-lee/website-to-markdown https://example.com/article > output.md
+bunx @seungyeop-lee/website-to-markdown convert https://example.com/article > output.md
 
 # 파일로 저장 (-o 옵션)
-bunx @seungyeop-lee/website-to-markdown -o output.md https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert -o output.md https://example.com/article
 ```
 
 ### 글로벌 설치
@@ -72,13 +72,13 @@ bun install -g @seungyeop-lee/website-to-markdown
 ```
 
 ```bash
-wtm https://example.com/article
-wtm --no-llm https://example.com/article
-wtm --translate ko https://example.com/article
-wtm --no-llm --translate ko https://example.com/article
-wtm --debug https://example.com/article
-wtm https://example.com/article > output.md
-wtm -o output.md https://example.com/article
+wtm convert https://example.com/article
+wtm convert --no-llm https://example.com/article
+wtm convert --translate ko https://example.com/article
+wtm convert --no-llm --translate ko https://example.com/article
+wtm convert --debug https://example.com/article
+wtm convert https://example.com/article > output.md
+wtm convert -o output.md https://example.com/article
 ```
 
 ### 크롤링
@@ -87,19 +87,19 @@ wtm -o output.md https://example.com/article
 
 ```bash
 # 기본 크롤링 (시작 URL의 같은 디렉토리 범위, 링크 3홉)
-wtm crawl https://example.com/docs/intro --output-dir ./docs
+wtm crawl --url https://example.com/docs/intro --output-dir ./docs
 
 # 링크 깊이 제한 및 스코프 확장
-wtm crawl https://example.com/docs/api/auth --output-dir ./docs --link-depth 2 --scope 1
+wtm crawl --url https://example.com/docs/api/auth --output-dir ./docs --link-depth 2 --scope 1
 
 # 경로 깊이 제한 (scope root 아래 1 segment까지만 허용)
-wtm crawl https://example.com/docs/intro --output-dir ./docs --path-depth 1
+wtm crawl --url https://example.com/docs/intro --output-dir ./docs --path-depth 1
 
 # 동시 처리 수 조절
-wtm crawl https://example.com/docs/intro --output-dir ./docs --concurrency 5
+wtm crawl --url https://example.com/docs/intro --output-dir ./docs --concurrency 5
 
 # LLM 없이 크롤링
-wtm crawl https://example.com/docs/intro --output-dir ./docs --no-llm
+wtm crawl --url https://example.com/docs/intro --output-dir ./docs --no-llm
 
 # URL 목록 파일로 크롤링 (링크 추적 없이 지정된 URL만 변환)
 wtm crawl --urls urls.txt --output-dir ./docs
@@ -110,6 +110,7 @@ wtm crawl --urls urls.txt --output-dir ./docs
 | 옵션 | 설명 | 기본값  |
 |------|------|:----:|
 | `--output-dir <dir>` | 결과 파일 저장 디렉토리 | (필수) |
+| `--url <url>` | 크롤링 시작 URL (`--urls` 미사용 시 필요) |  -   |
 | `--link-depth <n>` | 최대 링크 홉 깊이 |  3   |
 | `--path-depth <n>` | scope 기준 하위 경로 최대 깊이 |  1   |
 | `--scope <n>` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) |  0   |
