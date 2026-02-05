@@ -66,6 +66,36 @@ describe('UrlScopeFilter', () => {
     });
   });
 
+  describe('maxPathDepth', () => {
+    // scope root = /docs/
+    const filter = new UrlScopeFilter('https://example.com/docs/intro', 0, 1);
+
+    test('path-depth 이내 URL 허용', () => {
+      // /docs/page.html → 상대경로 page.html → 1 segment
+      expect(filter.isInScope('https://example.com/docs/page.html')).toBe(true);
+    });
+
+    test('path-depth 초과 URL 거부', () => {
+      // /docs/tutorial/page.html → 상대경로 tutorial/page.html → 2 segments
+      expect(filter.isInScope('https://example.com/docs/tutorial/page.html')).toBe(false);
+    });
+
+    test('scope root 자체는 0 segment로 허용', () => {
+      expect(filter.isInScope('https://example.com/docs/')).toBe(true);
+    });
+
+    test('path-depth 2이면 2 segment까지 허용', () => {
+      const filter2 = new UrlScopeFilter('https://example.com/docs/intro', 0, 2);
+      expect(filter2.isInScope('https://example.com/docs/tutorial/page.html')).toBe(true);
+      expect(filter2.isInScope('https://example.com/docs/a/b/c.html')).toBe(false);
+    });
+
+    test('미지정 시 무제한 허용', () => {
+      const filterNoLimit = new UrlScopeFilter('https://example.com/docs/intro');
+      expect(filterNoLimit.isInScope('https://example.com/docs/a/b/c/d/e')).toBe(true);
+    });
+  });
+
   test('무효한 후보 URL은 거부', () => {
     const filter = new UrlScopeFilter('https://example.com/a/b');
     expect(filter.isInScope('not-a-url')).toBe(false);

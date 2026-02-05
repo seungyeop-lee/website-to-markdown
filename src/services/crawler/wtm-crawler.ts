@@ -16,7 +16,8 @@ export interface CrawlResult {
 }
 
 export class WtmCrawler {
-  private maxDepth: number;
+  private maxLinkDepth: number;
+  private maxPathDepth?: number;
   private scopeLevels: number;
   private concurrency: number;
   private outputDir: string;
@@ -26,7 +27,8 @@ export class WtmCrawler {
   constructor(wtmFn: WtmFn, options: CrawlOptions) {
     this.wtmFn = wtmFn;
     this.outputDir = options.outputDir;
-    this.maxDepth = options.maxDepth ?? 3;
+    this.maxLinkDepth = options.maxLinkDepth ?? 3;
+    this.maxPathDepth = options.maxPathDepth ?? 1;
     this.scopeLevels = options.scopeLevels ?? 0;
     this.concurrency = options.concurrency ?? 3;
     this.wtmOptions = { ...options.wtmOptions };
@@ -36,7 +38,7 @@ export class WtmCrawler {
     const browserManager = new BrowserManager();
     const wtmOptions: WtmOptions = { ...this.wtmOptions, browserManager };
     const writer = new WtmFileWriter(this.wtmFn, this.outputDir, wtmOptions);
-    const scopeFilter = new UrlScopeFilter(startUrl, this.scopeLevels);
+    const scopeFilter = new UrlScopeFilter(startUrl, this.scopeLevels, this.maxPathDepth);
 
     const visited = new Set<string>();
     const succeeded: string[] = [];
@@ -48,7 +50,7 @@ export class WtmCrawler {
     let queue: { url: string; depth: number }[] = [{ url: startUrl, depth: 0 }];
     visited.add(startUrl);
 
-    logger.debug(`크롤링 설정: maxDepth=${this.maxDepth}, concurrency=${this.concurrency}, scopeLevels=${this.scopeLevels}`);
+    logger.debug(`크롤링 설정: maxLinkDepth=${this.maxLinkDepth}, maxPathDepth=${this.maxPathDepth}, concurrency=${this.concurrency}, scopeLevels=${this.scopeLevels}`);
 
     try {
       while (queue.length > 0) {
@@ -60,7 +62,7 @@ export class WtmCrawler {
 
         const results = await Promise.allSettled(
           batch.map(async ({ url, depth }) => {
-            logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.maxDepth}): ${url}`);
+            logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.maxLinkDepth}): ${url}`);
             const result = await writer.write(url);
             return { url, depth, links: result.metadata.links };
           }),
@@ -74,7 +76,7 @@ export class WtmCrawler {
             succeeded.push(url);
             const { links } = settledResult.value;
 
-            if (depth < this.maxDepth) {
+            if (depth < this.maxLinkDepth) {
               let added = 0;
               let duplicated = 0;
               let outOfScope = 0;
@@ -98,7 +100,7 @@ export class WtmCrawler {
 
               logger.debug(`링크 분석 (${url}): 발견 ${links.length}, 추가 ${added}, 중복 ${duplicated}, scope 밖 ${outOfScope}`);
             } else {
-              logger.debug(`최대 depth 도달, 링크 수집 스킵: ${url}`);
+              logger.debug(`최대 link-depth 도달, 링크 수집 스킵: ${url}`);
             }
           } else {
             const error = settledResult.reason instanceof Error

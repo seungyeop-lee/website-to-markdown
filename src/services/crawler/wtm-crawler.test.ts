@@ -49,7 +49,7 @@ describe('WtmCrawler', () => {
 
       const crawler = new WtmCrawler(wtmFn, {
         outputDir: '/out',
-        maxDepth: 3,
+        maxLinkDepth: 3,
       });
 
       const result = await crawler.crawl('https://example.com/docs/page');
@@ -75,7 +75,7 @@ describe('WtmCrawler', () => {
 
       const crawler = new WtmCrawler(wtmFn, {
         outputDir: '/out',
-        maxDepth: 3,
+        maxLinkDepth: 3,
         scopeLevels: 0,
       });
 
@@ -96,7 +96,7 @@ describe('WtmCrawler', () => {
 
       const crawler = new WtmCrawler(wtmFn, {
         outputDir: '/out',
-        maxDepth: 1,
+        maxLinkDepth: 1,
       });
 
       const result = await crawler.crawl('https://example.com/docs/a');
@@ -105,7 +105,7 @@ describe('WtmCrawler', () => {
       expect(result.succeeded).toHaveLength(1);
     });
 
-    test('maxDepth 제한', async () => {
+    test('maxLinkDepth 제한', async () => {
       const pages: Record<string, WtmResult> = {
         'https://example.com/docs/a': makeResult('https://example.com/docs/a', [
           'https://example.com/docs/b',
@@ -122,7 +122,7 @@ describe('WtmCrawler', () => {
 
       const crawler = new WtmCrawler(wtmFn, {
         outputDir: '/out',
-        maxDepth: 1, // a(0) → b(1)까지만
+        maxLinkDepth: 1, // a(0) → b(1)까지만
       });
 
       const result = await crawler.crawl('https://example.com/docs/a');
@@ -145,7 +145,7 @@ describe('WtmCrawler', () => {
 
       const crawler = new WtmCrawler(wtmFn, {
         outputDir: '/out',
-        maxDepth: 1,
+        maxLinkDepth: 1,
         scopeLevels: 0,
       });
 
@@ -173,7 +173,7 @@ describe('WtmCrawler', () => {
 
       const crawler = new WtmCrawler(wtmFn, {
         outputDir: '/out',
-        maxDepth: 1,
+        maxLinkDepth: 1,
         concurrency: 10,
       });
 
@@ -199,6 +199,29 @@ describe('WtmCrawler', () => {
       await crawler.crawl('https://example.com/page');
 
       expect(receivedOpts?.browserManager).toBeDefined();
+    });
+
+    test('maxPathDepth로 경로 깊이 초과 URL 스킵', async () => {
+      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+        Promise.resolve(
+          makeResult(url, [
+            'https://example.com/docs/page',         // 1 segment → 허용
+            'https://example.com/docs/tutorial/page', // 2 segments → 거부
+          ]),
+        ),
+      );
+
+      const crawler = new WtmCrawler(wtmFn, {
+        outputDir: '/out',
+        maxLinkDepth: 2,
+        scopeLevels: 0,
+        maxPathDepth: 1,
+      });
+
+      const result = await crawler.crawl('https://example.com/docs/start');
+
+      expect(result.succeeded).toContain('https://example.com/docs/page');
+      expect(result.skipped).toContain('https://example.com/docs/tutorial/page');
     });
   });
 

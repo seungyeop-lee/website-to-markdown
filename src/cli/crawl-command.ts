@@ -10,7 +10,8 @@ export function registerCrawlCommand(program: Command): void {
     .description('웹 사이트를 크롤링하여 다중 페이지를 Markdown으로 변환')
     .argument('[url]', '크롤링 시작 URL')
     .requiredOption('--output-dir <dir>', '결과 파일 저장 디렉토리')
-    .option('--depth <n>', '최대 크롤링 깊이', '3')
+    .option('--link-depth <n>', '최대 링크 홉 깊이', '3')
+    .option('--path-depth <n>', 'scope 기준 하위 경로 최대 깊이', '1')
     .option('--scope <n>', '스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...)', '0')
     .option('--concurrency <n>', '동시 처리 수', '3')
     .option('--urls <file>', 'URL 목록 파일 경로 (한 줄에 하나씩)')
@@ -21,7 +22,8 @@ export function registerCrawlCommand(program: Command): void {
     .addHelpText('after', ENV_HELP)
     .action(async (url: string | undefined, options: CommonOptions & {
       outputDir: string;
-      depth: string;
+      linkDepth: string;
+      pathDepth: string;
       scope: string;
       concurrency: string;
       urls?: string;
@@ -32,7 +34,8 @@ export function registerCrawlCommand(program: Command): void {
         const crawler = new WtmCrawler(wtm, {
           outputDir: options.outputDir,
           wtmOptions: buildWtmOptions(options),
-          maxDepth: parseInt(options.depth, 10),
+          maxLinkDepth: parseInt(options.linkDepth, 10),
+          maxPathDepth: parseInt(options.pathDepth, 10),
           scopeLevels: parseInt(options.scope, 10),
           concurrency: parseInt(options.concurrency, 10),
         });

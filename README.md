@@ -86,11 +86,14 @@ wtm -o output.md https://example.com/article
 링크를 따라가며 여러 페이지를 한 번에 Markdown으로 변환합니다.
 
 ```bash
-# 기본 크롤링 (시작 URL의 같은 디렉토리 범위, 깊이 3)
+# 기본 크롤링 (시작 URL의 같은 디렉토리 범위, 링크 3홉)
 wtm crawl https://example.com/docs/intro --output-dir ./docs
 
-# 깊이 제한 및 스코프 확장
-wtm crawl https://example.com/docs/api/auth --output-dir ./docs --depth 2 --scope 1
+# 링크 깊이 제한 및 스코프 확장
+wtm crawl https://example.com/docs/api/auth --output-dir ./docs --link-depth 2 --scope 1
+
+# 경로 깊이 제한 (scope root 아래 1 segment까지만 허용)
+wtm crawl https://example.com/docs/intro --output-dir ./docs --path-depth 1
 
 # 동시 처리 수 조절
 wtm crawl https://example.com/docs/intro --output-dir ./docs --concurrency 5
@@ -104,13 +107,14 @@ wtm crawl --urls urls.txt --output-dir ./docs
 
 **옵션:**
 
-| 옵션 | 설명 | 기본값 |
-|------|------|:------:|
+| 옵션 | 설명 | 기본값  |
+|------|------|:----:|
 | `--output-dir <dir>` | 결과 파일 저장 디렉토리 | (필수) |
-| `--depth <n>` | 최대 크롤링 깊이 | 3 |
-| `--scope <n>` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) | 0 |
-| `--concurrency <n>` | 동시 처리 수 | 3 |
-| `--urls <file>` | URL 목록 파일 경로 (한 줄에 하나씩) | - |
+| `--link-depth <n>` | 최대 링크 홉 깊이 |  3   |
+| `--path-depth <n>` | scope 기준 하위 경로 최대 깊이 |  1   |
+| `--scope <n>` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) |  0   |
+| `--concurrency <n>` | 동시 처리 수 |  3   |
+| `--urls <file>` | URL 목록 파일 경로 (한 줄에 하나씩) |  -   |
 
 **스코프 레벨 설명:**
 
@@ -118,6 +122,28 @@ wtm crawl --urls urls.txt --output-dir ./docs
 - `--scope 0` → `/a/b/c/*` 범위 (기본값)
 - `--scope 1` → `/a/b/*` 범위
 - `--scope 2` → `/a/*` 범위
+
+**링크 깊이 설명:**
+
+시작 URL로부터 링크를 몇 홉까지 따라갈지 제한합니다.
+
+```
+depth 0: 시작 URL (https://example.com/docs/intro)
+depth 1: 시작 페이지에서 발견된 링크들
+depth 2: depth 1 페이지들에서 발견된 링크들
+depth 3: depth 2 페이지들에서 발견된 링크들 (기본 최대)
+```
+
+- `--link-depth 1` → 시작 페이지 + 직접 링크된 페이지만 크롤링
+- `--link-depth 3` → 3홉까지 크롤링 (기본값)
+
+**경로 깊이 설명:**
+
+스코프 루트 기준으로 하위 경로 세그먼트 수를 제한합니다.
+
+시작 URL이 `example.com/docs/intro`이고 스코프 루트가 `/docs/`일 때:
+- `--path-depth 1` → `/docs/page` ✅, `/docs/tutorial/page` ❌
+- `--path-depth 2` → `/docs/tutorial/page` ✅, `/docs/a/b/page` ❌
 
 ## 라이브러리 사용법
 

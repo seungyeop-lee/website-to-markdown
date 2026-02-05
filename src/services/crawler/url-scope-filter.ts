@@ -6,18 +6,28 @@
 export class UrlScopeFilter {
   private origin: string;
   private scopePrefix: string;
+  private maxPathDepth?: number;
 
-  constructor(startUrl: string, scopeLevels: number = 0) {
+  constructor(startUrl: string, scopeLevels: number = 0, maxPathDepth?: number) {
     const urlObj = new URL(startUrl);
     this.origin = urlObj.origin;
     this.scopePrefix = this.computeScopePrefix(urlObj.pathname, scopeLevels);
+    this.maxPathDepth = maxPathDepth;
   }
 
   isInScope(candidateUrl: string): boolean {
     try {
       const urlObj = new URL(candidateUrl);
       if (urlObj.origin !== this.origin) return false;
-      return urlObj.pathname.startsWith(this.scopePrefix);
+      if (!urlObj.pathname.startsWith(this.scopePrefix)) return false;
+
+      if (this.maxPathDepth != null) {
+        const relativePath = urlObj.pathname.slice(this.scopePrefix.length);
+        const segments = relativePath.split('/').filter(s => s !== '');
+        if (segments.length > this.maxPathDepth) return false;
+      }
+
+      return true;
     } catch {
       return false;
     }
