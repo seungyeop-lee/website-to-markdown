@@ -27,7 +27,7 @@ export class PageRenderer {
 
       const html = await this.getMergedFramesContent(page);
 
-      return { html, metadata: await this.extractMetadata(url) };
+      return { html, metadata: await this.extractMetadata(page) };
     } finally {
       await page.close();
     }
@@ -80,9 +80,33 @@ export class PageRenderer {
     );
   }
 
-  private async extractMetadata(url: string): Promise<PageMetadata> {
-    const urlObj = new URL(url);
+  private async extractMetadata(page: Page): Promise<PageMetadata> {
+    const finalUrl = page.url();
+    const urlObj = new URL(finalUrl);
     const origin = `${urlObj.protocol}//${urlObj.host}`;
-    return {url, origin};
+    const pathname = urlObj.pathname;
+    const title = await page.title();
+    const links = await this.extractLinks(page);
+    return { url: finalUrl, origin, pathname, title, links };
+  }
+
+  private async extractLinks(page: Page): Promise<string[]> {
+    const rawLinks: string[] = await page.evaluate(() => {
+      return Array.from(document.querySelectorAll('a[href]'))
+        .map(a => (a as HTMLAnchorElement).href)
+        .filter(href => href.startsWith('http'));
+    });
+
+    const unique = new Set<string>();
+    for (const link of rawLinks) {
+      try {
+        const urlObj = new URL(link);
+        urlObj.hash = '';
+        unique.add(urlObj.href);
+      } catch {
+        // 무효한 URL 무시
+      }
+    }
+    return Array.from(unique);
   }
 }

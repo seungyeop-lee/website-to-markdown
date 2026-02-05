@@ -12,6 +12,7 @@
 - LLM 기반 다국어 번역 (`--translate <lang>`)
 - YAML frontmatter 자동 생성 (url, createdAt)
 - `--debug` 모드로 파이프라인 각 스텝 로깅
+- 다중 페이지 크롤링 (`wtm crawl`) — 링크 추적, 스코프 필터링, 병렬 처리
 
 ---
 
@@ -57,8 +58,11 @@ bunx @seungyeop-lee/website-to-markdown --no-llm --translate ko https://example.
 # 디버그 모드 (파이프라인 각 스텝 로깅)
 bunx @seungyeop-lee/website-to-markdown --debug https://example.com/article
 
-# 파일로 저장
+# 파일로 저장 (stdout 리다이렉션)
 bunx @seungyeop-lee/website-to-markdown https://example.com/article > output.md
+
+# 파일로 저장 (-o 옵션)
+bunx @seungyeop-lee/website-to-markdown -o output.md https://example.com/article
 ```
 
 ### 글로벌 설치
@@ -74,15 +78,56 @@ wtm --translate ko https://example.com/article
 wtm --no-llm --translate ko https://example.com/article
 wtm --debug https://example.com/article
 wtm https://example.com/article > output.md
+wtm -o output.md https://example.com/article
 ```
 
+### 크롤링
+
+링크를 따라가며 여러 페이지를 한 번에 Markdown으로 변환합니다.
+
+```bash
+# 기본 크롤링 (시작 URL의 같은 디렉토리 범위, 깊이 3)
+wtm crawl https://example.com/docs/intro --output-dir ./docs
+
+# 깊이 제한 및 스코프 확장
+wtm crawl https://example.com/docs/api/auth --output-dir ./docs --depth 2 --scope 1
+
+# 동시 처리 수 조절
+wtm crawl https://example.com/docs/intro --output-dir ./docs --concurrency 5
+
+# LLM 없이 크롤링
+wtm crawl https://example.com/docs/intro --output-dir ./docs --no-llm
+
+# URL 목록 파일로 크롤링 (링크 추적 없이 지정된 URL만 변환)
+wtm crawl --urls urls.txt --output-dir ./docs
+```
+
+**옵션:**
+
+| 옵션 | 설명 | 기본값 |
+|------|------|:------:|
+| `--output-dir <dir>` | 결과 파일 저장 디렉토리 | (필수) |
+| `--depth <n>` | 최대 크롤링 깊이 | 3 |
+| `--scope <n>` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) | 0 |
+| `--concurrency <n>` | 동시 처리 수 | 3 |
+| `--urls <file>` | URL 목록 파일 경로 (한 줄에 하나씩) | - |
+
+**스코프 레벨 설명:**
+
+시작 URL이 `example.com/a/b/c/page`일 때:
+- `--scope 0` → `/a/b/c/*` 범위 (기본값)
+- `--scope 1` → `/a/b/*` 범위
+- `--scope 2` → `/a/*` 범위
+
 ## 라이브러리 사용법
+
+`wtm()`은 `WtmResult` 객체를 반환합니다: `{ markdown, metadata }`.
 
 ```ts
 import { wtm } from '@seungyeop-lee/website-to-markdown';
 
 // LLM 후처리 활성화
-const markdown = await wtm('https://example.com/article', {
+const result = await wtm('https://example.com/article', {
   llm: {
     enable: true,
     baseUrl: 'https://api.openai.com/v1',
@@ -90,12 +135,14 @@ const markdown = await wtm('https://example.com/article', {
     model: 'gpt-4o-mini',
   },
 });
+console.log(result.markdown);    // Markdown 문자열
+console.log(result.metadata);    // { url, origin, pathname, title, links }
 
 // LLM 후처리 비활성화 (기본 마크다운 변환만 수행)
-const markdown = await wtm('https://example.com/article');
+const result = await wtm('https://example.com/article');
 
 // 한국어로 번역 (LLM 정제 + 번역)
-const markdown = await wtm('https://example.com/article', {
+const result = await wtm('https://example.com/article', {
   translate: 'ko',
   llm: {
     enable: true,
@@ -106,7 +153,7 @@ const markdown = await wtm('https://example.com/article', {
 });
 
 // LLM 정제 없이 번역만 수행
-const markdown = await wtm('https://example.com/article', {
+const result = await wtm('https://example.com/article', {
   translate: 'ko',
   llm: {
     enable: false,
@@ -117,7 +164,7 @@ const markdown = await wtm('https://example.com/article', {
 });
 
 // 디버그 모드
-const markdown = await wtm('https://example.com/article', {
+const result = await wtm('https://example.com/article', {
   debug: true,
   llm: {
     enable: true,

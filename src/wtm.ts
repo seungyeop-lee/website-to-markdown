@@ -10,14 +10,14 @@ import { logger } from './infrastructure/logger.ts';
 import { PageRenderer } from './services/page-renderer.ts';
 import { ContentExtractor } from './services/content-extractor.ts';
 import { WtmConfig } from './wtm-config.ts';
-import type { WtmOptions } from './types.ts';
+import type { WtmOptions, WtmResult } from './types.ts';
 
-export type { WtmOptions };
+export type { WtmOptions, WtmResult };
 
 /**
  * URL을 받아 Markdown으로 변환하여 반환한다.
  */
-export async function wtm(url: string, options?: WtmOptions): Promise<string> {
+export async function wtm(url: string, options?: WtmOptions): Promise<WtmResult> {
   try {
     new URL(url);
   } catch {
@@ -27,7 +27,8 @@ export async function wtm(url: string, options?: WtmOptions): Promise<string> {
   const config = new WtmConfig(options);
   logger.init(config.debug);
 
-  const browserManager = new BrowserManager();
+  const ownsBrowser = !options?.browserManager;
+  const browserManager = options?.browserManager ?? new BrowserManager();
   const refiner = config.llm.enable ? new LLMClient(config.llm) : new NullRefiner();
   const translator = config.translate ? new LLMTranslator(config.llm, config.translate) : new NullTranslator();
   const pageRenderer = new PageRenderer(browserManager);
@@ -44,8 +45,10 @@ export async function wtm(url: string, options?: WtmOptions): Promise<string> {
     const translated = await translator.call(markdown);
     logger.debug(`번역 완료 (markdown: ${translated.length}자)\n--- 번역 결과 ---\n${translated}\n---`);
 
-    return translated;
+    return { markdown: translated, metadata };
   } finally {
-    await browserManager.close();
+    if (ownsBrowser) {
+      await browserManager.close();
+    }
   }
 }

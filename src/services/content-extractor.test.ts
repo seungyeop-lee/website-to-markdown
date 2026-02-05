@@ -17,6 +17,9 @@ describe('ContentExtractor', () => {
   const metadata = {
     url: 'https://example.com',
     origin: 'https://example.com',
+    pathname: '/',
+    title: 'Test Page',
+    links: [],
   };
 
   const sampleHtml = '<html><head><title>Test Page</title></head><body><main><h1>Hello</h1><p>World</p></main></body></html>';
