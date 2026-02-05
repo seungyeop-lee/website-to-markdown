@@ -13,4 +13,5 @@
 - 서비스와 인프라는 클래스 기반으로 작성한다.
 - utils는 순수 함수로 유지한다.
 - 협력자는 생성자 주입(Constructor Injection)으로 전달한다.
-- `src/cli.ts`가 composition root로서 모든 의존성을 조립한다.
+- `src/wtm.ts`와 `src/services/wtm-crawler.ts`가 composition root로서 의존성을 조립한다.
+- `src/cli/`는 CLI 인터페이스 계층으로, 인자 파싱 후 서비스를 호출한다.
