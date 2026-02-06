@@ -11,18 +11,37 @@ chromium.use(StealthPlugin());
 
 export class BrowserManager {
   private browser: Browser | null = null;
+  private launchPromise: Promise<Browser> | null = null;
+
+  constructor(
+    private launchBrowser: () => Promise<Browser> = () => chromium.launch({ headless: true }),
+  ) {}
 
   async getBrowser(): Promise<Browser> {
-    if (!this.browser) {
-      this.browser = await chromium.launch({ headless: true });
+    if (this.browser) {
+      return this.browser;
     }
-    return this.browser;
+
+    if (!this.launchPromise) {
+      this.launchPromise = this.launchBrowser()
+        .then((browser) => {
+          this.browser = browser;
+          return browser;
+        })
+        .finally(() => {
+          this.launchPromise = null;
+        });
+    }
+
+    return await this.launchPromise;
   }
 
   async close(): Promise<void> {
-    if (this.browser) {
-      await this.browser.close();
-      this.browser = null;
+    const browser = this.browser ?? (this.launchPromise ? await this.launchPromise : null);
+    this.browser = null;
+
+    if (browser) {
+      await browser.close();
     }
   }
 }
