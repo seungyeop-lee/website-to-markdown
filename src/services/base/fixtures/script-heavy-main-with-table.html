@@ -1,0 +1,2028 @@
+<html><head><title>Fixture</title></head><body><main><h1>모집공고 및 입주신청</h1><script type="text/javascript">
+//<![CDATA[
+
+$(document).ready(function() {
+	// 시도 변경시 시군구 선택
+	$("#CMB_SIDO").change(function(){
+		var opt2 = "<option value='ALL'>시/군/구 선택</option>";
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0100'>서울 중구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0110'>서울 종로구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0120'>서울 서대문구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0121'>서울 마포구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0122'>서울 은평구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0130'>서울 동대문구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0131'>서울 중랑구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0132'>서울 도봉구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0133'>서울 성동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0134'>서울 강동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0135'>서울 강남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0136'>서울 성북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0137'>서울 서초구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0138'>서울 송파구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0139'>서울 노원구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0140'>서울 용산구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0142'>서울 강북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0143'>서울 광진구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0150'>서울 영등포구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0151'>서울 관악구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0152'>서울 구로구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0153'>서울 금천구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0156'>서울 동작구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0157'>서울 강서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==01){
+	
+		
+					opt2+=  "<option value='0158'>서울 양천구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0200'>부산 중구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0201'>부산 동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0202'>부산 서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0204'>부산 사하구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0206'>부산 영도구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0207'>부산 동래구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0208'>부산 남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0209'>부산 금정구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0211'>부산 연제구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0212'>부산 해운대구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0213'>부산 수영구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0214'>부산 부산진구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0216'>부산 북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0217'>부산 사상구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0218'>부산 강서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==02){
+	
+		
+					opt2+=  "<option value='0219'>부산 기장군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0300'>대구 중구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0301'>대구 동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0302'>대구 북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0303'>대구 서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0304'>대구 달서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0305'>대구 남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0306'>대구 수성구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0311'>대구 달성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==03){
+	
+		
+					opt2+=  "<option value='0312'>대구 군위군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0400'>인천 중구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0401'>인천 동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0402'>인천 미추홀구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0403'>인천 부평구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0404'>인천 서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0405'>인천 남동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0406'>인천 연수구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0407'>인천 계양구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0409'>인천 옹진군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==04){
+	
+		
+					opt2+=  "<option value='0417'>인천 강화군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==05){
+	
+		
+					opt2+=  "<option value='0500'>광주 북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==05){
+	
+		
+					opt2+=  "<option value='0501'>광주 동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==05){
+	
+		
+					opt2+=  "<option value='0502'>광주 서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==05){
+	
+		
+					opt2+=  "<option value='0503'>광주 남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==05){
+	
+		
+					opt2+=  "<option value='0506'>광주 광산구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==06){
+	
+		
+					opt2+=  "<option value='0600'>대전 동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==06){
+	
+		
+					opt2+=  "<option value='0601'>대전 중구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==06){
+	
+		
+					opt2+=  "<option value='0602'>대전 서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==06){
+	
+		
+					opt2+=  "<option value='0605'>대전 유성구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==06){
+	
+		
+					opt2+=  "<option value='0606'>대전 대덕구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0710'>경기 고양시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0711'>경기 고양시 일산구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0712'>경기 고양시 덕양구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0713'>경기 파주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0715'>경기 김포시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0716'>경기 고양시 일산동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0717'>경기 고양시 일산서구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0719'>경기 부천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0720'>경기 부천시 원미구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0721'>경기 부천시 오정구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0722'>경기 부천시 소사구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0723'>경기 광명시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0725'>경기 안산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0727'>경기 과천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0729'>경기 시흥시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0730'>경기 안양시 만안구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0731'>경기 안양시 동안구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0732'>경기 안양시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0735'>경기 군포시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0737'>경기 의왕시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0739'>경기 수원시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0740'>경기 수원시 장안구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0741'>경기 수원시 권선구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0742'>경기 수원시 팔달구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0743'>경기 수원시 영통구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0745'>경기 화성시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0747'>경기 오산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0749'>경기 용인시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0750'>경기 평택시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0756'>경기 안성시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0760'>경기 성남시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0761'>경기 성남시 수정구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0762'>경기 성남시 중원구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0763'>경기 성남시 분당구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0764'>경기 광주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0765'>경기 하남시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0767'>경기 이천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0769'>경기 여주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0771'>경기 구리시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0772'>경기 남양주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0776'>경기 양평군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0777'>경기 가평군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0780'>경기 의정부시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0782'>경기 양주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0783'>경기 동두천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0786'>경기 연천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0787'>경기 포천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0788'>경기 안산시 단원구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0789'>경기 안산시 상록구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0790'>경기 용인시 기흥구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0791'>경기 용인시 수지구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0792'>경기 용인시 처인구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0793'>경기 화성시 만세구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0794'>경기 화성시 효행구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0795'>경기 화성시 병점구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==07){
+	
+		
+					opt2+=  "<option value='0796'>경기 화성시 동탄구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0800'>강원 춘천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0809'>강원 화천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0810'>강원 강릉시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0815'>강원 양양군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0817'>강원 속초시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0819'>강원 고성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0820'>강원 원주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0825'>강원 횡성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0830'>강원 영월군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0832'>강원 평창군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0833'>강원 정선군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0835'>강원 태백시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0840'>강원 동해시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0845'>강원 삼척시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0850'>강원 홍천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0852'>강원 인제군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0855'>강원 양구군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==08){
+	
+		
+					opt2+=  "<option value='0869'>강원 철원군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0959'>충북 청주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0960'>충북 청주시 상당구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0961'>충북 청주시 흥덕구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0962'>충북 청주시 서원구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0964'>충북 청주시 청원구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0965'>충북 진천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0967'>충북 괴산군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0969'>충북 음성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0970'>충북 영동군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0973'>충북 옥천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0976'>충북 보은군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0978'>충북 증평군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0980'>충북 충주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0990'>충북 제천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==09){
+	
+		
+					opt2+=  "<option value='0995'>충북 단양군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1012'>충남 금산군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1014'>충남 공주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1020'>충남 논산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1021'>충남 계룡시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1023'>충남 부여군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1025'>충남 서천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1030'>충남 천안시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1031'>충남 천안시 동남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1032'>충남 천안시 서북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1036'>충남 아산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1039'>충남 연기군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1040'>충남 예산군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1043'>충남 당진시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1045'>충남 청양군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1050'>충남 홍성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1055'>충남 보령시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1056'>충남 서산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==10){
+	
+		
+					opt2+=  "<option value='1057'>충남 태안군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1159'>전북 전주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1160'>전북 전주시 완산구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1161'>전북 전주시 덕진구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1165'>전북 완주군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1166'>전북 임실군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1167'>전북 진안군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1168'>전북 무주군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1170'>전북 익산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1173'>전북 군산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1176'>전북 김제시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1179'>전북 부안군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1180'>전북 정읍시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1185'>전북 고창군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1190'>전북 남원시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1195'>전북 순창군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==11){
+	
+		
+					opt2+=  "<option value='1197'>전북 장수군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1213'>전남 영광군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1215'>전남 장성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1216'>전남 곡성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1217'>전남 담양군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1219'>전남 화순군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1220'>전남 나주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1225'>전남 함평군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1226'>전남 영암군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1227'>전남 강진군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1229'>전남 장흥군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1230'>전남 목포시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1234'>전남 무안군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1235'>전남 신안군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1236'>전남 해남군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1237'>전남 완도군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1239'>전남 진도군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1240'>전남 순천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1242'>전남 구례군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1245'>전남 광양시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1246'>전남 보성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1248'>전남 고흥군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==12){
+	
+		
+					opt2+=  "<option value='1250'>전남 여수시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1312'>경북 경산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1314'>경북 청도군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1316'>경북 군위군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1317'>경북 고령군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1318'>경북 칠곡군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1319'>경북 성주군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1330'>경북 구미시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1340'>경북 김천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1342'>경북 상주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1345'>경북 문경시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1350'>경북 영주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1355'>경북 봉화군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1357'>경북 예천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1360'>경북 안동시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1363'>경북 청송군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1364'>경북 영양군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1366'>경북 영덕군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1367'>경북 울진군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1369'>경북 의성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1370'>경북 영천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1380'>경북 경주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1389'>경북 포항시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1390'>경북 포항시 남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1391'>경북 포항시 북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==13){
+	
+		
+					opt2+=  "<option value='1399'>경북 울릉군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1421'>경남 김해시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1426'>경남 양산시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1427'>경남 밀양시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1435'>경남 창녕군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1436'>경남 의령군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1437'>경남 함안군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1438'>경남 고성군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1441'>경남 창원시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1442'>경남 창원시 마산회원구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1443'>경남 창원시 마산합포구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1444'>경남 창원시 성산구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1446'>경남 창원시 진해구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1447'>경남 창원시 의창구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1450'>경남 통영시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1456'>경남 거제시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1460'>경남 진주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1464'>경남 사천시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1466'>경남 산청군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1467'>경남 하동군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1468'>경남 남해군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1470'>경남 거창군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1476'>경남 함양군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==14){
+	
+		
+					opt2+=  "<option value='1478'>경남 합천군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==15){
+	
+		
+					opt2+=  "<option value='1590'>제주 제주시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==15){
+	
+		
+					opt2+=  "<option value='1595'>제주 북제주</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==15){
+	
+		
+					opt2+=  "<option value='1597'>제주 서귀포시</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==15){
+	
+		
+					opt2+=  "<option value='1599'>제주 남제주</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==16){
+	
+		
+					opt2+=  "<option value='1680'>울산 남구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==16){
+	
+		
+					opt2+=  "<option value='1681'>울산 중구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==16){
+	
+		
+					opt2+=  "<option value='1682'>울산 동구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==16){
+	
+		
+					opt2+=  "<option value='1683'>울산 북구</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==16){
+	
+		
+					opt2+=  "<option value='1689'>울산 울주군</option>";
+	
+				}
+				
+				if($("#CMB_SIDO").val()==17){
+	
+		
+					opt2+=  "<option value='1700'>세종</option>";
+	
+				}
+		
+
+		$('#sbGugun').html(opt2);
+		$('#span2').text($('#sbGugun option:checked').text());
+	
+	});
+	$('#BJAMT').val("ALL");
+	$('#span3').text($('#BJAMT option:checked').text());
+	$('#BJAREA').val("ALL");
+	$('#span4').text($('#BJAREA option:checked').text());
+	$('#BJORDER').val("04");
+	$('#span5').text($('#BJORDER option:checked').text());
+	
+	sido();
+});
+
+function sido(){
+	// 시도 셋팅
+	var opt1 = "<option value='ALL'>시/도 선택</option>";
+	
+	
+
+				opt1+=  "<option value='01'>서울특별시</option>"; 
+
+				opt1+=  "<option value='02'>부산광역시</option>"; 
+
+				opt1+=  "<option value='04'>인천광역시</option>"; 
+
+				opt1+=  "<option value='07'>경기도</option>"; 
+	
+	$('#CMB_SIDO').html(opt1);
+	$('#CMB_SIDO').val("ALL");
+	$('#span1').text($('#CMB_SIDO option:checked').text());
+	var opt2 = "<option value='ALL'>시/군/구 선택</option>";
+	
+	if("ALL"!="ALL"){
+	
+		
+	}
+	$('#sbGugun').html(opt2);
+	$('#sbGugun').val("ALL");
+	$('#span2').text($('#sbGugun option:checked').text());
+
+	
+}
+//]]>
+</script><script type="text/javascript">
+$(document).ready(function () {
+	//웹접근성 관련 팝업이 생성될때마다 수시로 변경처리 해 줘야 함
+	$("#layer_popup").find('.pop_footer').find("a").on('blur', function() {
+		$("#layer_popup").focus();
+	});
+	///////////////////////////////////
+	
+	let agent = window.navigator.userAgent.toLowerCase();
+	let appName = window.navigator.appName.toLowerCase();
+	if((appName === 'netscape' && agent.indexOf('trident')!== -1) || agent.indexOf('msie') !== -1) {
+		if(confirm("현재 페이지는 크롬(Chrome) 혹은 엣지(Edge)브라우저에 최적화 되어 있습니다.\n 해당 브라우저로 이동하시겠습니까?")){
+			window.location = "microsoft-edge:https://khug.or.kr";
+		}else{
+			alert("익스플로러(IE) 환경에서 접속이 원할하지 않거나 제한이 있을 수  있습니다.")
+		}
+	}
+// 	if (getCookie("layer_popup_min") != "Y") {
+// 		$('#layer_popup').show();
+// 		$('#bg_layer').addClass('bg__layer');
+// 	}	$('#layer_popup').focus();
+
+});
+function fn_popupClose() {
+	if($('#layer_popup').find(".pop_footer").find("#popClose").is(":checked")){
+		setCookie("layer_popup_min", "Y", 1);
+	}
+	$('#layer_popup').hide();
+	$('#bg_layer').removeClass('bg__layer');
+}
+function getCookie(id) {
+	var arg = id + "=";
+	var alen = arg.length;
+	var clen = document.cookie.length;
+	var i = 0;
+	while (i < clen) {
+		var offset = i + alen;
+
+		if (document.cookie.substring(i, offset) == arg) {
+			var endstr = document.cookie.indexOf(";", offset);
+			if (endstr == -1)
+				endstr = document.cookie.length;
+			return unescape(document.cookie.substring(offset, endstr));
+		}
+
+		i = document.cookie.indexOf(" ", i) + 1;
+
+		if (i == 0)
+			break;
+	}
+	return null;
+}
+
+function setCookie(id, value, day) {
+	var date = new Date();
+	date.setTime(date.getTime() + (day * 24 * 60 * 60 * 1000));
+	document.cookie = id + "=" + escape(value) + ";expires=" + date.toUTCString() + ";path=/";
+}
+function fn_popupClose2() {
+	$('#layer_popup2').hide();
+	$('#bg_layer2').removeClass('bg__layer');
+}
+
+</script><h5>주택 리스트 조회</h5><table><caption>입주자 모집 예정 주택 목록</caption><thead><tr><th>번호</th><th>신청자수</th></tr></thead><tbody><tr><td>700</td><td>35</td></tr></tbody></table></main></body></html>

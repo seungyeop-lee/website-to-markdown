@@ -1,6 +1,6 @@
 import { test, expect, describe, mock, beforeEach, afterEach } from 'bun:test';
 import { ContentExtractor } from './content-extractor.ts';
-import { LLMClient } from '../../infrastructure/llm-refiner.ts';
+import { LLMClient, NullRefiner } from '../../infrastructure/llm-refiner.ts';
 
 describe('ContentExtractor', () => {
   const testConfig = { enable: true, baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
@@ -92,5 +92,16 @@ describe('ContentExtractor', () => {
     const userMessage = receivedBody.messages[1].content;
     expect(userMessage).toContain('---');
     expect(userMessage).toContain('url:');
+  });
+
+  test('inline script가 많아도 본문 테이블은 유지된다', async () => {
+    const fixturePath = new URL('./fixtures/script-heavy-main-with-table.html', import.meta.url);
+    const fixtureHtml = await Bun.file(fixturePath).text();
+    const extractor = new ContentExtractor(new NullRefiner());
+
+    const markdown = await extractor.extract(fixtureHtml, metadata);
+
+    expect(markdown).toContain('| 번호 | 신청자수 |');
+    expect(markdown).toContain('| 700 | 35 |');
   });
 });
