@@ -46,6 +46,28 @@ describe('WtmFileWriter', () => {
     test('깊은 경로', () => {
       expect(writer.resolveFilePath('https://example.com/a/b/c/d')).toBe('/output/a/b/c/d.md');
     });
+
+    test('쿼리 파라미터를 파일명에 반영', () => {
+      expect(writer.resolveFilePath('https://example.com/docs/api?lang=ko&page=2'))
+        .toMatch(/^\/output\/docs\/api__lang-ko_page-2__h[a-f0-9]{8}\.md$/);
+    });
+
+    test('쿼리 파라미터 순서가 달라도 동일 파일명', () => {
+      const a = writer.resolveFilePath('https://example.com/docs/api?lang=ko&page=2');
+      const b = writer.resolveFilePath('https://example.com/docs/api?page=2&lang=ko');
+      expect(a).toBe(b);
+    });
+
+    test('쿼리 파라미터 값이 다르면 파일명이 달라짐', () => {
+      const a = writer.resolveFilePath('https://example.com/docs/api?lang=ko&page=2');
+      const b = writer.resolveFilePath('https://example.com/docs/api?lang=en&page=2');
+      expect(a).not.toBe(b);
+    });
+
+    test('루트 URL + 쿼리 파라미터', () => {
+      expect(writer.resolveFilePath('https://example.com/?lang=ko'))
+        .toMatch(/^\/output\/index__lang-ko__h[a-f0-9]{8}\.md$/);
+    });
   });
 
   describe('write', () => {
@@ -83,6 +105,26 @@ describe('WtmFileWriter', () => {
         await writer.write('https://example.com/page');
 
         expect(mockWtmFn).toHaveBeenCalledWith('https://example.com/page', opts);
+      } finally {
+        Bun.write = originalWrite;
+      }
+    });
+
+    test('write 시 쿼리 파라미터를 포함한 파일명으로 저장', async () => {
+      const written: { path: string; content: string }[] = [];
+      const originalWrite = Bun.write;
+      // @ts-expect-error: mock Bun.write
+      Bun.write = mock((path: string, content: string) => {
+        written.push({ path, content });
+        return Promise.resolve(content.length);
+      });
+
+      try {
+        const writer = new WtmFileWriter(mockWtmFn, '/output');
+        await writer.write('https://example.com/docs/api?lang=ko&page=2');
+
+        expect(written).toHaveLength(1);
+        expect(written[0]!.path).toMatch(/^\/output\/docs\/api__lang-ko_page-2__h[a-f0-9]{8}\.md$/);
       } finally {
         Bun.write = originalWrite;
       }

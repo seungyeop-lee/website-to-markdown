@@ -5,7 +5,7 @@
  */
 
 import { join } from 'node:path';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { type HarnessCaseDefinition, createCheck } from '../domain/harness-case-definition.ts';
 import type { HarnessCheck, HarnessComparison, HarnessSuite } from '../domain/harness-types.ts';
 
@@ -223,6 +223,86 @@ export class HarnessCaseRegistry {
           }
 
           return { checks, comparisons };
+        },
+      },
+      {
+        id: 'core-crawl-urls-query-filenames',
+        title: 'crawl --urls query filename uniqueness',
+        suite: 'core',
+        args: (ctx) => {
+          const urlsFile = join(ctx.actualRoot, 'inputs', 'query-urls.txt');
+          const outputDir = join(ctx.actualRoot, 'crawl-query');
+          return ['crawl', '--no-llm', '--urls', urlsFile, '--output-dir', outputDir];
+        },
+        beforeRun: async (ctx) => {
+          const inputDir = join(ctx.actualRoot, 'inputs');
+          const urlsFile = join(inputDir, 'query-urls.txt');
+
+          await mkdir(inputDir, { recursive: true });
+          await mkdir(join(ctx.actualRoot, 'crawl-query'), { recursive: true });
+
+          const lines = [
+            `${ctx.fixtureOrigin}/docs/intro.html?lang=ko&page=1`,
+            `${ctx.fixtureOrigin}/docs/intro.html?page=1&lang=ko`,
+            `${ctx.fixtureOrigin}/docs/intro.html?lang=en&page=1`,
+          ];
+          await writeFile(urlsFile, `${lines.join('\n')}\n`, 'utf8');
+        },
+        verify: async (ctx, result, tools) => {
+          const checks: HarnessCheck[] = [];
+          const crawlRoot = join(ctx.actualRoot, 'crawl-query');
+          const actualFiles = await tools.collectMarkdownFiles(crawlRoot);
+
+          checks.push(
+            createCheck(
+              'exit code',
+              result.exitCode === 0,
+              '종료코드 0',
+              `종료코드가 0이 아닙니다: ${String(result.exitCode)}`,
+            ),
+          );
+
+          checks.push(
+            createCheck(
+              '쿼리별 파일 2개 생성',
+              actualFiles.length === 2,
+              `생성 파일: ${actualFiles.join(', ')}`,
+              `예상 2개 / 실제 ${String(actualFiles.length)}개: ${actualFiles.join(', ') || '(없음)'}`,
+            ),
+          );
+
+          const koFiles = actualFiles.filter((file) => /^docs\/intro__lang-ko_page-1__h[a-f0-9]{8}\.md$/.test(file));
+          const enFiles = actualFiles.filter((file) => /^docs\/intro__lang-en_page-1__h[a-f0-9]{8}\.md$/.test(file));
+          const plainFileExists = actualFiles.includes('docs/intro.md');
+
+          checks.push(
+            createCheck(
+              'lang=ko 파일명 생성',
+              koFiles.length === 1,
+              `ko 파일: ${koFiles[0] ?? '(없음)'}`,
+              `ko 파일명이 기대 패턴과 다릅니다: ${actualFiles.join(', ') || '(없음)'}`,
+            ),
+          );
+
+          checks.push(
+            createCheck(
+              'lang=en 파일명 생성',
+              enFiles.length === 1,
+              `en 파일: ${enFiles[0] ?? '(없음)'}`,
+              `en 파일명이 기대 패턴과 다릅니다: ${actualFiles.join(', ') || '(없음)'}`,
+            ),
+          );
+
+          checks.push(
+            createCheck(
+              '쿼리 없는 기본 파일 미생성',
+              !plainFileExists,
+              '기본 파일명(intro.md)은 생성되지 않았습니다.',
+              '쿼리 없는 기본 파일명(intro.md)이 생성되었습니다.',
+            ),
+          );
+
+          return { checks, comparisons: [] };
         },
       },
       {

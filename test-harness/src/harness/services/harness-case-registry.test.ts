@@ -8,16 +8,17 @@ import { describe, expect, it } from 'bun:test';
 import { HarnessCaseRegistry } from './harness-case-registry.ts';
 
 describe('HarnessCaseRegistry', () => {
-  it('core suite에 4개 케이스를 제공한다', () => {
+  it('core suite에 5개 케이스를 제공한다', () => {
     const registry = new HarnessCaseRegistry();
 
     const coreCases = registry.getCasesBySuite('core');
 
-    expect(coreCases).toHaveLength(4);
+    expect(coreCases).toHaveLength(5);
     expect(coreCases.map((entry) => entry.id)).toEqual([
       'core-convert-intro',
       'core-convert-spa',
       'core-crawl-docs',
+      'core-crawl-urls-query-filenames',
       'core-invalid-url',
     ]);
   });

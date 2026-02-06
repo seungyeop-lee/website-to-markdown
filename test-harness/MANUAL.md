@@ -73,6 +73,19 @@
   - `blog/outside.md` 미생성
   - 3개 파일 expected/actual 일치
 
+### core-crawl-urls-query-filenames
+
+- 명령: `crawl --no-llm --urls <input>/query-urls.txt --output-dir ...`
+- 입력 URL 예시:
+  - `<fixture>/docs/intro.html?lang=ko&page=1`
+  - `<fixture>/docs/intro.html?page=1&lang=ko` (같은 쿼리, 순서만 다름)
+  - `<fixture>/docs/intro.html?lang=en&page=1`
+- 검증:
+  - exit code `0`
+  - 생성 파일이 정확히 2개 (쿼리 순서만 다른 URL은 같은 파일명으로 수렴)
+  - 파일명이 `docs/intro__lang-ko_page-1__h*.md`, `docs/intro__lang-en_page-1__h*.md` 패턴을 만족
+  - `docs/intro.md` 미생성 (쿼리 누락 파일명 방지)
+
 ### core-invalid-url
 
 - 명령: `convert --no-llm not-a-url`

@@ -105,6 +105,12 @@ wtm crawl --url https://example.com/docs/intro --output-dir ./docs --no-llm
 wtm crawl --urls urls.txt --output-dir ./docs
 ```
 
+**쿼리 파라미터 포함 URL 파일명 규칙**
+
+- 기본: `/docs/api` → `docs/api.md`
+- 쿼리 포함: `/docs/api?lang=ko&page=2` → `docs/api__lang-ko_page-2__hxxxxxxxx.md`
+- 쿼리 키 순서는 자동 정렬되어 동일 쿼리는 같은 파일명으로 저장됩니다.
+
 **옵션:**
 
 | 옵션 | 설명 | 기본값  |

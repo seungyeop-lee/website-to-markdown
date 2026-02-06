@@ -18,7 +18,7 @@ make test
 make ui
 ```
 
-- `bun run test` / `make test`: core suite 실행 (`convert`, `crawl`, `invalid-url`)
+- `bun run test` / `make test`: core suite 실행 (`convert`, `crawl`, `crawl+query filename`, `invalid-url`)
 - `bun run ui` / `make ui`: 시각 검증 대시보드 실행 (기본 `http://127.0.0.1:41731`)
 - `bun run test:llm` / `make test-llm`: LLM 스모크 테스트 실행
 - `bun run clean` / `make clean`: `artifacts/latest` 정리
