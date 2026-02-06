@@ -38,6 +38,13 @@
 - `OPENAI_API_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_API_MODEL` 3개가 모두 있으면 실행
 - 하나라도 없으면 `SKIPPED`로 기록하고 실패 처리하지 않음
 
+## 2-1) 내부 아키텍처 (책임 주도 설계)
+
+- `src/run-cli-harness.ts`는 Composition Root로서 의존성 조립만 담당합니다.
+- `src/harness/domain/`은 타입/케이스 계약을 담당합니다.
+- `src/harness/infrastructure/`는 CLI 실행과 아티팩트 I/O를 담당합니다.
+- `src/harness/services/`는 케이스 레지스트리, 실행기, markdown 비교, 리포트 생성, 실행 오케스트레이션을 담당합니다.
+
 ## 3) 테스트 케이스
 
 ### core-convert-intro

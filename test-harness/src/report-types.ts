@@ -1,48 +1,7 @@
-export type HarnessSuite = 'core' | 'llm';
-export type HarnessCaseStatus = 'PASSED' | 'FAILED' | 'SKIPPED';
+/**
+ * 책임: 기존 import 경로 호환성을 유지하기 위한 타입 재export를 제공한다.
+ * 협력: 외부 코드가 report-types.ts를 계속 참조해도 동일 타입 계약을 사용한다.
+ * 비책임: 실제 타입 정의 원본의 유지보수는 담당하지 않는다.
+ */
 
-export interface HarnessCheck {
-  name: string;
-  passed: boolean;
-  detail: string;
-}
-
-export interface HarnessComparison {
-  id: string;
-  label: string;
-  expectedPath?: string;
-  actualPath?: string;
-  diffPath?: string;
-  matched?: boolean;
-}
-
-export interface HarnessCaseReport {
-  id: string;
-  title: string;
-  suite: HarnessSuite;
-  status: HarnessCaseStatus;
-  command: string;
-  durationMs: number;
-  exitCode: number | null;
-  skippedReason?: string;
-  stdoutPath: string;
-  stderrPath: string;
-  checks: HarnessCheck[];
-  comparisons: HarnessComparison[];
-}
-
-export interface HarnessSummary {
-  total: number;
-  passed: number;
-  failed: number;
-  skipped: number;
-}
-
-export interface HarnessReport {
-  generatedAt: string;
-  suite: HarnessSuite;
-  fixtureOrigin?: string;
-  artifactsRoot: string;
-  summary: HarnessSummary;
-  cases: HarnessCaseReport[];
-}
+export * from './harness/domain/harness-types.ts';

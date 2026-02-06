@@ -55,3 +55,10 @@ make ui
 ## 문서
 
 - 상세 작동 원리/검증 규칙: [`MANUAL.md`](./MANUAL.md)
+
+## 내부 구조 (책임 분리)
+
+- `src/run-cli-harness.ts`: Composition Root (의존성 조립/실행 시작)
+- `src/harness/domain/*`: 공통 타입, 케이스 계약
+- `src/harness/infrastructure/*`: CLI 실행, 아티팩트 파일 I/O
+- `src/harness/services/*`: 케이스 레지스트리, 실행기, 비교기, 리포트 작성기, 러너

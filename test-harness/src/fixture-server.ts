@@ -1,3 +1,9 @@
+/**
+ * 책임: 로컬 fixture 사이트를 HTTP 서버로 제공해 하니스 입력을 고정한다.
+ * 협력: harness-runner가 테스트 시작/종료 시 서버 생명주기를 관리한다.
+ * 비책임: 케이스 실행, 결과 비교, 리포트 생성은 담당하지 않는다.
+ */
+
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { extname, resolve } from 'node:path';
@@ -7,6 +13,7 @@ const DEFAULT_PORT = 41730;
 const MAX_PORT_ATTEMPTS = 30;
 const SITE_ROOT = resolve(import.meta.dir, '..', 'fixtures', 'site');
 
+/** 시작된 fixture 서버 핸들(주소/종료 함수). */
 export interface StartedFixtureServer {
   host: string;
   port: number;
@@ -73,6 +80,7 @@ async function serveFixture(request: Request): Promise<Response> {
   });
 }
 
+/** 충돌 시 포트를 증가시키며 fixture 서버를 시작한다. */
 export function startFixtureServer(startPort = DEFAULT_PORT): StartedFixtureServer {
   let lastError: unknown;
 

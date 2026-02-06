@@ -1,3 +1,9 @@
+/**
+ * 책임: 하니스 결과 아티팩트와 정적 viewer 페이지를 HTTP로 제공한다.
+ * 협력: `bun run ui` 명령이 이 파일을 실행해 대시보드를 띄운다.
+ * 비책임: 하니스 케이스 실행/검증/리포트 생성은 담당하지 않는다.
+ */
+
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { extname, resolve } from 'node:path';
@@ -77,6 +83,7 @@ async function fetchViewer(request: Request): Promise<Response> {
   });
 }
 
+/** 충돌 시 포트를 증가시키며 viewer 서버를 시작한다. */
 function startViewer(startPort = DEFAULT_PORT): { host: string; port: number; stop: () => void } {
   let lastError: unknown;
 
