@@ -1,0 +1,13 @@
+{
+  "name": "website-to-markdown-cli-harness",
+  "private": true,
+  "type": "module",
+  "description": "Local independent subproject for real CLI harness testing",
+  "scripts": {
+    "test": "bun src/run-cli-harness.ts --suite core",
+    "test:llm": "bun src/run-cli-harness.ts --suite llm",
+    "ui": "bun src/serve-viewer.ts",
+    "clean": "rm -rf artifacts/latest",
+    "test:all": "bun run test && bun run test:llm"
+  }
+}

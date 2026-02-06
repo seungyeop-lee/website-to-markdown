@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harness SPA</title>
+  </head>
+  <body>
+    <main id="app">
+      <h1>Loading SPA Content</h1>
+    </main>
+
+    <script>
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <h1>SPA Dynamic Heading</h1>
+        <p>This text is rendered by JavaScript for Playwright verification.</p>
+        <ul>
+          <li>Rendered on client side</li>
+          <li>Captured after network idle</li>
+        </ul>
+      `;
+    </script>
+  </body>
+</html>
