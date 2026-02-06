@@ -7,6 +7,7 @@
 1. `./.claude/CLAUDE.md`
 2. `./.claude/rules/development-principles.md`
 3. `./.claude/rules/bun-usage.md`
+4. `./.claude/rules/test-harness.md`
 
 ## Maintenance Policy
 
@@ -19,3 +20,4 @@
 - [`./.claude/CLAUDE.md`](./.claude/CLAUDE.md): 작업 시작 전 `README.md` 확인 및 기능 변경 시 `README.md` 업데이트 원칙을 정의합니다.
 - [`./.claude/rules/bun-usage.md`](./.claude/rules/bun-usage.md): Node 생태계 대신 Bun 기반 실행/빌드/테스트/패키지 관리 규칙을 정의합니다.
 - [`./.claude/rules/development-principles.md`](./.claude/rules/development-principles.md): 책임 주도 설계, 테스트 작성, 계층/폴더 구조, 의존성 조립 원칙을 정의합니다.
+- [`./.claude/rules/test-harness.md`](./.claude/rules/test-harness.md): 테스트 하니스 실행 절차와 사용 규칙을 정의합니다.
