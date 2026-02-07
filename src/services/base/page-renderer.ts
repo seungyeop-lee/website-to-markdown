@@ -1,18 +1,18 @@
 /**
  * 페이지 렌더링
  * 책임: URL → 렌더링된 HTML + 메타데이터 반환
- * 협력자: BrowserManager
+ * 협력자: BrowserProvider
  */
 
 import type {Page} from 'playwright';
-import type {PageMetadata, RenderResult} from '../../types.ts';
-import type {BrowserManager} from '../../infrastructure/browser-manager.ts';
+import type {PageMetadata, RenderResult, BrowserProvider} from '../../types.ts';
+import {logger} from '../../infrastructure/logger.ts';
 
 export class PageRenderer {
-  constructor(private browserManager: BrowserManager) {}
+  constructor(private browserProvider: BrowserProvider) {}
 
   async render(url: string): Promise<RenderResult> {
-    const browser = await this.browserManager.getBrowser();
+    const browser = await this.browserProvider.getBrowser();
     const page = await browser.newPage();
 
     try {
@@ -22,7 +22,7 @@ export class PageRenderer {
       });
 
       await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {
-        console.warn(`[warn] networkidle timeout: ${url}`);
+        logger.debug(`networkidle timeout: ${url}`);
       });
 
       const html = await this.getMergedFramesContent(page);
@@ -60,8 +60,8 @@ export class PageRenderer {
         if (bodyHtml) {
           childContents.push(bodyHtml);
         }
-      } catch {
-        // 접근 불가한 프레임 무시
+      } catch (e) {
+        logger.debug(`프레임 접근 불가 (무시됨): ${e instanceof Error ? e.message : e}`);
       }
     }
 

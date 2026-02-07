@@ -1,16 +1,8 @@
 import { test, expect, describe, mock } from 'bun:test';
-import { LLMClient } from './llm-refiner.ts';
+import {LLMClient, type LLMConfig} from './llm-refiner.ts';
 
 describe('LLMClient', () => {
-  const testConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
-
-  test('API 키 없으면 에러', async () => {
-    const client = new LLMClient({ baseUrl: '', apiKey: '', model: '' });
-
-    expect(client.call('# test')).rejects.toThrow(
-      'OPENAI_API_KEY 환경변수가 설정되지 않았습니다.'
-    );
-  });
+  const testConfig: LLMConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model', enable: true };
 
   test('API 오류 시 에러 메시지 포함', async () => {
     const originalFetch = globalThis.fetch;

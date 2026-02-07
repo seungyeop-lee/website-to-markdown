@@ -15,14 +15,6 @@ describe('NullTranslator', () => {
 describe('LLMTranslator', () => {
   const testConfig = { enable: true, baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
 
-  test('API 키 없으면 에러', async () => {
-    const translator = new LLMTranslator({ enable: true, baseUrl: '', apiKey: '', model: '' }, 'ko');
-
-    expect(translator.call('# test')).rejects.toThrow(
-      'OPENAI_API_KEY 환경변수가 설정되지 않았습니다.'
-    );
-  });
-
   test('API 오류 시 에러 메시지 포함', async () => {
     const originalFetch = globalThis.fetch;
     // @ts-expect-error: mock doesn't include preconnect

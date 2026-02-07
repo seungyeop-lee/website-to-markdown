@@ -47,7 +47,6 @@ export class WtmCrawler {
     const skipped: string[] = [];
     let processedCount = 0;
 
-    // BFS 큐: { url, depth }
     let queue: { url: string; depth: number }[] = [{ url: startUrl, depth: 0 }];
     visited.add(normalizeUrl(startUrl));
 
@@ -55,7 +54,6 @@ export class WtmCrawler {
 
     try {
       while (queue.length > 0) {
-        // 현재 배치에서 concurrency만큼 처리
         const batch = queue.splice(0, this.concurrency);
         const nextQueue: { url: string; depth: number }[] = [];
 
@@ -69,49 +67,10 @@ export class WtmCrawler {
           }),
         );
 
-        for (let i = 0; i < results.length; i++) {
-          const settledResult = results[i]!;
-          const { url, depth } = batch[i]!;
-
-          if (settledResult.status === 'fulfilled') {
-            succeeded.push(url);
-            const { links } = settledResult.value;
-
-            if (depth < this.maxLinkDepth) {
-              let added = 0;
-              let duplicated = 0;
-              let outOfScope = 0;
-
-              for (const link of links) {
-                const normalizedLink = normalizeUrl(link);
-                if (visited.has(normalizedLink)) {
-                  duplicated++;
-                  continue;
-                }
-                visited.add(normalizedLink);
-
-                if (!scopeFilter.isInScope(link)) {
-                  skipped.push(link);
-                  outOfScope++;
-                  continue;
-                }
-
-                nextQueue.push({ url: link, depth: depth + 1 });
-                added++;
-              }
-
-              logger.debug(`링크 분석 (${url}): 발견 ${links.length}, 추가 ${added}, 중복 ${duplicated}, scope 밖 ${outOfScope}`);
-            } else {
-              logger.debug(`최대 link-depth 도달, 링크 수집 스킵: ${url}`);
-            }
-          } else {
-            const error = settledResult.reason instanceof Error
-              ? settledResult.reason.message
-              : String(settledResult.reason);
-            failed.push({ url, error });
-            logger.info(`크롤링 실패 #${processedCount} : ${url} - ${error}`);
-          }
-        }
+        this.processBatchResults(results, batch, {
+          succeeded, failed, skipped, nextQueue,
+          visited, scopeFilter, processedCount,
+        });
 
         queue = [...queue, ...nextQueue];
         logger.debug(`배치 완료: 성공 ${succeeded.length}, 실패 ${failed.length}, 대기 큐 ${queue.length}개`);
@@ -122,6 +81,75 @@ export class WtmCrawler {
 
     logger.info(`크롤링 완료: 성공 ${succeeded.length}, 실패 ${failed.length}, 스킵 ${skipped.length}`);
     return { succeeded, failed, skipped };
+  }
+
+  private processBatchResults(
+    results: PromiseSettledResult<{ url: string; depth: number; links: string[] }>[],
+    batch: { url: string; depth: number }[],
+    ctx: {
+      succeeded: string[];
+      failed: { url: string; error: string }[];
+      skipped: string[];
+      nextQueue: { url: string; depth: number }[];
+      visited: Set<string>;
+      scopeFilter: UrlScopeFilter;
+      processedCount: number;
+    },
+  ): void {
+    for (let i = 0; i < results.length; i++) {
+      const settledResult = results[i]!;
+      const { url, depth } = batch[i]!;
+
+      if (settledResult.status === 'fulfilled') {
+        ctx.succeeded.push(url);
+        if (depth < this.maxLinkDepth) {
+          this.enqueueDiscoveredLinks(settledResult.value.links, depth, ctx);
+        } else {
+          logger.debug(`최대 link-depth 도달, 링크 수집 스킵: ${url}`);
+        }
+      } else {
+        const error = settledResult.reason instanceof Error
+          ? settledResult.reason.message
+          : String(settledResult.reason);
+        ctx.failed.push({ url, error });
+        logger.info(`크롤링 실패 #${ctx.processedCount} : ${url} - ${error}`);
+      }
+    }
+  }
+
+  private enqueueDiscoveredLinks(
+    links: string[],
+    depth: number,
+    ctx: {
+      skipped: string[];
+      nextQueue: { url: string; depth: number }[];
+      visited: Set<string>;
+      scopeFilter: UrlScopeFilter;
+    },
+  ): void {
+    let added = 0;
+    let duplicated = 0;
+    let outOfScope = 0;
+
+    for (const link of links) {
+      const normalizedLink = normalizeUrl(link);
+      if (ctx.visited.has(normalizedLink)) {
+        duplicated++;
+        continue;
+      }
+      ctx.visited.add(normalizedLink);
+
+      if (!ctx.scopeFilter.isInScope(link)) {
+        ctx.skipped.push(link);
+        outOfScope++;
+        continue;
+      }
+
+      ctx.nextQueue.push({ url: link, depth: depth + 1 });
+      added++;
+    }
+
+    logger.debug(`링크 분석: 발견 ${links.length}, 추가 ${added}, 중복 ${duplicated}, scope 밖 ${outOfScope}`);
   }
 
   async crawlUrls(urls: string[]): Promise<CrawlResult> {

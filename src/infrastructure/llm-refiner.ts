@@ -3,6 +3,8 @@
  * 책임: LLM API 호출만 담당
  */
 
+import { fetchWithRetry } from '../utils/fetch-with-retry.ts';
+
 const SYSTEM_PROMPT = `You are a Markdown post-processor. You receive a Markdown document that was converted from a web page by an automated tool. The conversion already extracted basic structure, but noise and artifacts remain. Your job is to clean it up.
 
 Rules:
@@ -49,11 +51,7 @@ export class LLMClient implements MarkdownRefiner {
   }
 
   async call(markdown: string): Promise<string> {
-    if (!this.config.apiKey) {
-      throw new Error('OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
-    }
-
-    const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
+    const response = await fetchWithRetry(`${this.config.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

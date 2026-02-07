@@ -4,6 +4,7 @@
  */
 
 import type { LLMConfig } from './llm-refiner.ts';
+import { fetchWithRetry } from '../utils/fetch-with-retry.ts';
 
 function buildSystemPrompt(targetLang: string): string {
   return `You are a Markdown translator. Translate the following Markdown document into ${targetLang}.
@@ -45,11 +46,7 @@ export class LLMTranslator implements MarkdownTranslator {
   }
 
   async call(markdown: string): Promise<string> {
-    if (!this.config.apiKey) {
-      throw new Error('OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
-    }
-
-    const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
+    const response = await fetchWithRetry(`${this.config.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
