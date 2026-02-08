@@ -2,7 +2,9 @@
 
 웹 사이트 URL을 입력받아 핵심 본문을 추출하고 Markdown으로 변환하는 CLI 도구 및 라이브러리.
 
-> **요구사항:** [Bun](https://bun.sh) 런타임 필수
+> **CLI 사용:** [Bun](https://bun.sh) 런타임 필수 (`bunx`로 실행)
+> 
+> **라이브러리 사용:** Node.js 18+ 호환 (`npm install`로 설치)
 
 ### 주요 기능
 
@@ -33,8 +35,18 @@ bunx @seungyeop-lee/website-to-markdown convert --llm-refine https://example.com
 ## 설치
 
 ```bash
-bun add @seungyeop-lee/website-to-markdown
+# CLI 사용 (Bun 필수)
+bun add -g @seungyeop-lee/website-to-markdown
+
+# 라이브러리 사용 (Node.js 호환)
+npm install @seungyeop-lee/website-to-markdown
 ```
+
+> **참고:** 설치 시 `postinstall` 스크립트가 Playwright Chromium을 자동 다운로드합니다.
+> `--ignore-scripts` 옵션으로 설치한 경우 수동으로 실행해 주세요:
+> ```bash
+> npx playwright install chromium
+> ```
 
 ## CLI 사용법
 

@@ -3,6 +3,8 @@
  * 책임: 변환 함수 호출 + markdown을 파일로 저장
  */
 
+import { writeFile, mkdir } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import { logger } from '../../infrastructure/logger.ts';
 import type { WtmResult } from '../../types.ts';
 import type { WtmConverter } from './types.ts';
@@ -19,10 +21,15 @@ export class WtmFileWriter implements WtmConverter {
     const result = await this.converter.convert(url);
     const filePath = this.resolveFilePath(url);
 
-    await Bun.write(filePath, result.markdown);
+    await this.writeToFile(filePath, result.markdown);
     logger.info(`저장 완료: ${filePath}`);
 
     return result;
+  }
+
+  private async writeToFile(filePath: string, content: string): Promise<void> {
+    await mkdir(dirname(filePath), { recursive: true });
+    await writeFile(filePath, content);
   }
 
   resolveFilePath(url: string): string {

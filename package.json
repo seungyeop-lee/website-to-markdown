@@ -17,7 +17,7 @@
     "wtm": "dist/cli/index.js"
   },
   "scripts": {
-    "postinstall": "bunx playwright install chromium",
+    "postinstall": "npx playwright install chromium",
     "start": "bun src/cli/index.ts",
     "test": "bun test",
     "build": "bun build src/index.ts src/cli/index.ts --outdir dist --target node --format esm --minify --external playwright --external playwright-extra --external puppeteer-extra-plugin-stealth",

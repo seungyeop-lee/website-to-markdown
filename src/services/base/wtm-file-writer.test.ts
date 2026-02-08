@@ -1,4 +1,4 @@
-import { test, expect, describe, mock, beforeEach } from 'bun:test';
+import { test, expect, describe, mock, beforeEach, spyOn } from 'bun:test';
 import { WtmFileWriter } from './wtm-file-writer.ts';
 import type { WtmResult } from '../../types.ts';
 
@@ -73,47 +73,26 @@ describe('WtmFileWriter', () => {
 
   describe('write', () => {
     test('convertFn 호출 후 파일 저장', async () => {
-      const written: { path: string; content: string }[] = [];
-      const originalWrite = Bun.write;
-      // @ts-expect-error: mock Bun.write
-      Bun.write = mock((path: string, content: string) => {
-        written.push({ path, content });
-        return Promise.resolve(content.length);
-      });
+      const writer = new WtmFileWriter(mockConverter, '/output');
+      const writeToFileSpy = spyOn(writer as any, 'writeToFile').mockResolvedValue(undefined);
 
-      try {
-        const writer = new WtmFileWriter(mockConverter, '/output');
-        const result = await writer.convert('https://example.com/docs/api');
+      const result = await writer.convert('https://example.com/docs/api');
 
-        expect(mockConvert).toHaveBeenCalledTimes(1);
-        expect(mockConvert).toHaveBeenCalledWith('https://example.com/docs/api');
-        expect(written).toHaveLength(1);
-        expect(written[0]!.path).toBe('/output/docs/api.md');
-        expect(written[0]!.content).toBe('# Test');
-        expect(result).toEqual(mockResult);
-      } finally {
-        Bun.write = originalWrite;
-      }
+      expect(mockConvert).toHaveBeenCalledTimes(1);
+      expect(mockConvert).toHaveBeenCalledWith('https://example.com/docs/api');
+      expect(writeToFileSpy).toHaveBeenCalledWith('/output/docs/api.md', '# Test');
+      expect(result).toEqual(mockResult);
     });
 
     test('write 시 쿼리 파라미터를 포함한 파일명으로 저장', async () => {
-      const written: { path: string; content: string }[] = [];
-      const originalWrite = Bun.write;
-      // @ts-expect-error: mock Bun.write
-      Bun.write = mock((path: string, content: string) => {
-        written.push({ path, content });
-        return Promise.resolve(content.length);
-      });
+      const writer = new WtmFileWriter(mockConverter, '/output');
+      const writeToFileSpy = spyOn(writer as any, 'writeToFile').mockResolvedValue(undefined);
 
-      try {
-        const writer = new WtmFileWriter(mockConverter, '/output');
-        await writer.convert('https://example.com/docs/api?lang=ko&page=2');
+      await writer.convert('https://example.com/docs/api?lang=ko&page=2');
 
-        expect(written).toHaveLength(1);
-        expect(written[0]!.path).toMatch(/^\/output\/docs\/api__lang-ko_page-2__h[a-f0-9]{8}\.md$/);
-      } finally {
-        Bun.write = originalWrite;
-      }
+      expect(writeToFileSpy).toHaveBeenCalledTimes(1);
+      const calledPath = writeToFileSpy.mock.calls[0]![0];
+      expect(calledPath).toMatch(/^\/output\/docs\/api__lang-ko_page-2__h[a-f0-9]{8}\.md$/);
     });
   });
 });
