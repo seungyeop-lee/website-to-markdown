@@ -3,9 +3,8 @@
  * 책임: 다중 페이지 크롤링 오케스트레이션
  */
 
-import { BrowserManager } from '../../infrastructure/browser-manager.ts';
 import { logger } from '../../infrastructure/logger.ts';
-import type { CrawlOptions, WtmOptions } from '../../types.ts';
+import type { CrawlOptions } from '../../types.ts';
 import { normalizeUrl } from '../../utils/url-normalizer.ts';
 import { UrlScopeFilter } from './url-scope-filter.ts';
 import { WtmFileWriter, type WtmFn } from './wtm-file-writer.ts';
@@ -22,23 +21,19 @@ export class WtmCrawler {
   private readonly scopeLevels: number;
   private readonly concurrency: number;
   private readonly outputDir: string;
-  private readonly wtmOptions: WtmOptions;
-  private readonly wtmFn: WtmFn;
+  private readonly convertFn: WtmFn;
 
-  constructor(wtmFn: WtmFn, options: CrawlOptions) {
-    this.wtmFn = wtmFn;
+  constructor(convertFn: WtmFn, options: CrawlOptions) {
+    this.convertFn = convertFn;
     this.outputDir = options.outputDir;
     this.maxLinkDepth = options.maxLinkDepth ?? 3;
     this.maxPathDepth = options.maxPathDepth ?? 1;
     this.scopeLevels = options.scopeLevels ?? 0;
     this.concurrency = options.concurrency ?? 3;
-    this.wtmOptions = { ...options.wtmOptions };
   }
 
   async crawl(startUrl: string): Promise<CrawlResult> {
-    const browserManager = new BrowserManager();
-    const wtmOptions: WtmOptions = { ...this.wtmOptions, browserManager };
-    const writer = new WtmFileWriter(this.wtmFn, this.outputDir, wtmOptions);
+    const writer = new WtmFileWriter(this.convertFn, this.outputDir);
     const scopeFilter = new UrlScopeFilter(startUrl, this.scopeLevels, this.maxPathDepth);
 
     const visited = new Set<string>();
@@ -52,31 +47,27 @@ export class WtmCrawler {
 
     logger.debug(`크롤링 설정: maxLinkDepth=${this.maxLinkDepth}, maxPathDepth=${this.maxPathDepth}, concurrency=${this.concurrency}, scopeLevels=${this.scopeLevels}`);
 
-    try {
-      while (queue.length > 0) {
-        const batch = queue.splice(0, this.concurrency);
-        const nextQueue: { url: string; depth: number }[] = [];
+    while (queue.length > 0) {
+      const batch = queue.splice(0, this.concurrency);
+      const nextQueue: { url: string; depth: number }[] = [];
 
-        logger.debug(`배치 처리 시작: ${batch.length}개, 남은 큐: ${queue.length}개`);
+      logger.debug(`배치 처리 시작: ${batch.length}개, 남은 큐: ${queue.length}개`);
 
-        const results = await Promise.allSettled(
-          batch.map(async ({ url, depth }) => {
-            logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.maxLinkDepth}): ${url}`);
-            const result = await writer.write(url);
-            return { url, depth, links: result.metadata.links };
-          }),
-        );
+      const results = await Promise.allSettled(
+        batch.map(async ({ url, depth }) => {
+          logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.maxLinkDepth}): ${url}`);
+          const result = await writer.write(url);
+          return { url, depth, links: result.metadata.links };
+        }),
+      );
 
-        this.processBatchResults(results, batch, {
-          succeeded, failed, skipped, nextQueue,
-          visited, scopeFilter, processedCount,
-        });
+      this.processBatchResults(results, batch, {
+        succeeded, failed, skipped, nextQueue,
+        visited, scopeFilter, processedCount,
+      });
 
-        queue = [...queue, ...nextQueue];
-        logger.debug(`배치 완료: 성공 ${succeeded.length}, 실패 ${failed.length}, 대기 큐 ${queue.length}개`);
-      }
-    } finally {
-      await browserManager.close();
+      queue = [...queue, ...nextQueue];
+      logger.debug(`배치 완료: 성공 ${succeeded.length}, 실패 ${failed.length}, 대기 큐 ${queue.length}개`);
     }
 
     logger.info(`크롤링 완료: 성공 ${succeeded.length}, 실패 ${failed.length}, 스킵 ${skipped.length}`);
@@ -153,42 +144,36 @@ export class WtmCrawler {
   }
 
   async crawlUrls(urls: string[]): Promise<CrawlResult> {
-    const browserManager = new BrowserManager();
-    const wtmOptions: WtmOptions = { ...this.wtmOptions, browserManager };
-    const writer = new WtmFileWriter(this.wtmFn, this.outputDir, wtmOptions);
+    const writer = new WtmFileWriter(this.convertFn, this.outputDir);
 
     const succeeded: string[] = [];
     const failed: { url: string; error: string }[] = [];
 
-    try {
-      // concurrency만큼 배치 처리
-      let processedCount = 0;
-      for (let i = 0; i < urls.length; i += this.concurrency) {
-        const batch = urls.slice(i, i + this.concurrency);
+    // concurrency만큼 배치 처리
+    let processedCount = 0;
+    for (let i = 0; i < urls.length; i += this.concurrency) {
+      const batch = urls.slice(i, i + this.concurrency);
 
-        const results = await Promise.allSettled(
-          batch.map(async (url) => {
-            logger.info(`변환 #${++processedCount}/${urls.length}: ${url}`);
-            await writer.write(url);
-            return url;
-          }),
-        );
+      const results = await Promise.allSettled(
+        batch.map(async (url) => {
+          logger.info(`변환 #${++processedCount}/${urls.length}: ${url}`);
+          await writer.write(url);
+          return url;
+        }),
+      );
 
-        for (const result of results) {
-          if (result.status === 'fulfilled') {
-            succeeded.push(result.value);
-          } else {
-            const url = batch[results.indexOf(result)]!;
-            const error = result.reason instanceof Error
-              ? result.reason.message
-              : String(result.reason);
-            failed.push({ url, error });
-            logger.info(`변환 실패: ${url} - ${error}`);
-          }
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
+          succeeded.push(result.value);
+        } else {
+          const url = batch[results.indexOf(result)]!;
+          const error = result.reason instanceof Error
+            ? result.reason.message
+            : String(result.reason);
+          failed.push({ url, error });
+          logger.info(`변환 실패: ${url} - ${error}`);
         }
       }
-    } finally {
-      await browserManager.close();
     }
 
     logger.info(`변환 완료: 성공 ${succeeded.length}, 실패 ${failed.length}`);

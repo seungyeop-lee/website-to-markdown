@@ -71,7 +71,7 @@ describe('WtmFileWriter', () => {
   });
 
   describe('write', () => {
-    test('wtmFn 호출 후 파일 저장', async () => {
+    test('convertFn 호출 후 파일 저장', async () => {
       const written: { path: string; content: string }[] = [];
       const originalWrite = Bun.write;
       // @ts-expect-error: mock Bun.write
@@ -85,26 +85,11 @@ describe('WtmFileWriter', () => {
         const result = await writer.write('https://example.com/docs/api');
 
         expect(mockWtmFn).toHaveBeenCalledTimes(1);
-        expect(mockWtmFn).toHaveBeenCalledWith('https://example.com/docs/api', undefined);
+        expect(mockWtmFn).toHaveBeenCalledWith('https://example.com/docs/api');
         expect(written).toHaveLength(1);
         expect(written[0]!.path).toBe('/output/docs/api.md');
         expect(written[0]!.content).toBe('# Test');
         expect(result).toEqual(mockResult);
-      } finally {
-        Bun.write = originalWrite;
-      }
-    });
-
-    test('wtmOptions를 wtmFn에 전달', async () => {
-      const originalWrite = Bun.write;
-      Bun.write = mock(() => Promise.resolve(0)) as typeof Bun.write;
-
-      try {
-        const opts = { debug: true };
-        const writer = new WtmFileWriter(mockWtmFn, '/output', opts);
-        await writer.write('https://example.com/page');
-
-        expect(mockWtmFn).toHaveBeenCalledWith('https://example.com/page', opts);
       } finally {
         Bun.write = originalWrite;
       }

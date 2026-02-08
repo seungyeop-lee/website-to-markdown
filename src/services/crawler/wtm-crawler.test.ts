@@ -1,17 +1,6 @@
 import { test, expect, describe, mock, beforeEach } from 'bun:test';
 import { WtmCrawler } from './wtm-crawler.ts';
-import type { WtmResult, WtmOptions } from '../../types.ts';
-
-// BrowserManager mock: BrowserManager import 시 close가 호출되므로 mock 필요
-const mockClose = mock(() => Promise.resolve());
-const mockGetBrowser = mock(() => Promise.resolve({}));
-
-mock.module('../../infrastructure/browser-manager.ts', () => ({
-  BrowserManager: class {
-    close = mockClose;
-    getBrowser = mockGetBrowser;
-  },
-}));
+import type { WtmResult } from '../../types.ts';
 
 // Bun.write mock
 const writtenFiles: { path: string; content: string }[] = [];
@@ -37,17 +26,16 @@ function makeResult(url: string, links: string[] = []): WtmResult {
 
 describe('WtmCrawler', () => {
   beforeEach(() => {
-    mockClose.mockClear();
     writtenFiles.length = 0;
   });
 
   describe('crawl', () => {
     test('시작 URL만 크롤링 (링크 없음)', async () => {
-      const wtmFn = mock((_url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((_url: string) =>
         Promise.resolve(makeResult('https://example.com/docs/page')),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 3,
       });
@@ -56,7 +44,7 @@ describe('WtmCrawler', () => {
 
       expect(result.succeeded).toEqual(['https://example.com/docs/page']);
       expect(result.failed).toHaveLength(0);
-      expect(wtmFn).toHaveBeenCalledTimes(1);
+      expect(convertFn).toHaveBeenCalledTimes(1);
     });
 
     test('링크를 따라 크롤링', async () => {
@@ -69,11 +57,11 @@ describe('WtmCrawler', () => {
         'https://example.com/docs/c': makeResult('https://example.com/docs/c'),
       };
 
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(pages[url]!),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 3,
         scopeLevels: 0,
@@ -88,20 +76,20 @@ describe('WtmCrawler', () => {
     });
 
     test('중복 URL 방지', async () => {
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(
           makeResult(url, ['https://example.com/docs/a']), // 자기 자신을 다시 참조
         ),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 1,
       });
 
       const result = await crawler.crawl('https://example.com/docs/a');
 
-      expect(wtmFn).toHaveBeenCalledTimes(1);
+      expect(convertFn).toHaveBeenCalledTimes(1);
       expect(result.succeeded).toHaveLength(1);
     });
 
@@ -116,11 +104,11 @@ describe('WtmCrawler', () => {
         'https://example.com/docs/c': makeResult('https://example.com/docs/c'),
       };
 
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(pages[url]!),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 1, // a(0) → b(1)까지만
       });
@@ -133,7 +121,7 @@ describe('WtmCrawler', () => {
     });
 
     test('스코프 밖 URL 스킵', async () => {
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(
           makeResult(url, [
             'https://example.com/docs/child',
@@ -143,7 +131,7 @@ describe('WtmCrawler', () => {
         ),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 1,
         scopeLevels: 0,
@@ -158,7 +146,7 @@ describe('WtmCrawler', () => {
 
     test('개별 URL 실패 시 나머지는 계속 진행', async () => {
       let callCount = 0;
-      const wtmFn = mock((url: string, _opts?: WtmOptions) => {
+      const convertFn = mock((url: string) => {
         callCount++;
         if (url.includes('fail')) {
           return Promise.reject(new Error('fetch failed'));
@@ -171,7 +159,7 @@ describe('WtmCrawler', () => {
         );
       });
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 1,
         concurrency: 10,
@@ -185,24 +173,8 @@ describe('WtmCrawler', () => {
       expect(result.failed[0]!.url).toBe('https://example.com/docs/fail');
     });
 
-    test('browserManager를 wtmFn에 주입', async () => {
-      let receivedOpts: WtmOptions | undefined;
-      const wtmFn = mock((url: string, opts?: WtmOptions) => {
-        receivedOpts = opts;
-        return Promise.resolve(makeResult(url));
-      });
-
-      const crawler = new WtmCrawler(wtmFn, {
-        outputDir: '/out',
-      });
-
-      await crawler.crawl('https://example.com/page');
-
-      expect(receivedOpts?.browserManager).toBeDefined();
-    });
-
     test('maxPathDepth로 경로 깊이 초과 URL 스킵', async () => {
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(
           makeResult(url, [
             'https://example.com/docs/page',         // 1 segment → 허용
@@ -211,7 +183,7 @@ describe('WtmCrawler', () => {
         ),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
         maxLinkDepth: 2,
         scopeLevels: 0,
@@ -227,11 +199,11 @@ describe('WtmCrawler', () => {
 
   describe('crawlUrls', () => {
     test('URL 리스트를 일괄 처리', async () => {
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(makeResult(url)),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
       });
 
@@ -246,21 +218,21 @@ describe('WtmCrawler', () => {
       expect(result.succeeded).toHaveLength(3);
       expect(result.failed).toHaveLength(0);
       expect(result.skipped).toHaveLength(0);
-      expect(wtmFn).toHaveBeenCalledTimes(3);
+      expect(convertFn).toHaveBeenCalledTimes(3);
     });
 
     test('링크를 따라가지 않음', async () => {
-      const wtmFn = mock((url: string, _opts?: WtmOptions) =>
+      const convertFn = mock((url: string) =>
         Promise.resolve(makeResult(url, ['https://example.com/should-not-follow'])),
       );
 
-      const crawler = new WtmCrawler(wtmFn, {
+      const crawler = new WtmCrawler(convertFn, {
         outputDir: '/out',
       });
 
       const result = await crawler.crawlUrls(['https://example.com/a']);
 
-      expect(wtmFn).toHaveBeenCalledTimes(1);
+      expect(convertFn).toHaveBeenCalledTimes(1);
       expect(result.succeeded).toEqual(['https://example.com/a']);
     });
   });

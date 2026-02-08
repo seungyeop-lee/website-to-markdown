@@ -1,12 +1,12 @@
 /**
  * WtmFileWriter
- * 책임: wtm() 호출 + markdown을 파일로 저장
+ * 책임: 변환 함수 호출 + markdown을 파일로 저장
  */
 
 import { logger } from '../../infrastructure/logger.ts';
-import type { WtmOptions, WtmResult } from '../../types.ts';
+import type { WtmResult } from '../../types.ts';
 
-export type WtmFn = (url: string, options?: WtmOptions) => Promise<WtmResult>;
+export type WtmFn = (url: string) => Promise<WtmResult>;
 
 export class WtmFileWriter {
   private static readonly QUERY_SLUG_MAX_LENGTH = 80;
@@ -14,11 +14,10 @@ export class WtmFileWriter {
   constructor(
     private wtmFn: WtmFn,
     private outputDir: string,
-    private wtmOptions?: WtmOptions,
   ) {}
 
   async write(url: string): Promise<WtmResult> {
-    const result = await this.wtmFn(url, this.wtmOptions);
+    const result = await this.wtmFn(url);
     const filePath = this.resolveFilePath(url);
 
     await Bun.write(filePath, result.markdown);

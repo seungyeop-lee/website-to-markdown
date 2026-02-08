@@ -1,5 +1,6 @@
 import type { Command } from 'commander';
-import { wtm } from '../services/wtm/wtm.ts';
+import { BrowserManager } from '../infrastructure/browser-manager.ts';
+import { WtmConverter } from '../services/wtm/wtm.ts';
 import { WtmCrawler } from '../services/crawler/wtm-crawler.ts';
 import { logger } from '../infrastructure/logger.ts';
 import { buildWtmOptions, ENV_HELP, type CommonOptions } from './options.ts';
@@ -31,15 +32,20 @@ export function registerCrawlCommand(program: Command): void {
     }) => {
       logger.init(options.debug ?? false);
 
+      const browserManager = new BrowserManager();
       try {
-        const crawler = new WtmCrawler(wtm, {
-          outputDir: options.outputDir,
-          wtmOptions: buildWtmOptions(options),
-          maxLinkDepth: parseInt(options.linkDepth, 10),
-          maxPathDepth: parseInt(options.pathDepth, 10),
-          scopeLevels: parseInt(options.scope, 10),
-          concurrency: parseInt(options.concurrency, 10),
-        });
+        const wtmOptions = buildWtmOptions(options);
+        const converter = new WtmConverter(browserManager, wtmOptions);
+        const crawler = new WtmCrawler(
+          (url) => converter.convert(url),
+          {
+            outputDir: options.outputDir,
+            maxLinkDepth: parseInt(options.linkDepth, 10),
+            maxPathDepth: parseInt(options.pathDepth, 10),
+            scopeLevels: parseInt(options.scope, 10),
+            concurrency: parseInt(options.concurrency, 10),
+          },
+        );
 
         if (options.urls) {
           const fileContent = await Bun.file(options.urls).text();
@@ -68,6 +74,8 @@ export function registerCrawlCommand(program: Command): void {
         const message = error instanceof Error ? error.message : String(error);
         console.error(`[ERROR] ${message}`);
         process.exit(1);
+      } finally {
+        await browserManager.close();
       }
     });
 }

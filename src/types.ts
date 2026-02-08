@@ -31,12 +31,10 @@ export interface WtmOptions {
   llm?: Partial<LLMConfig>;
   translate?: string;
   debug?: boolean;
-  browserManager?: BrowserProvider;
 }
 
 export interface CrawlOptions {
   outputDir: string;
-  wtmOptions?: WtmOptions;
   maxLinkDepth?: number;
   maxPathDepth?: number;
   scopeLevels?: number;
