@@ -5,6 +5,8 @@
 
 import type { LLMConfig } from '../types.ts';
 import { fetchWithRetry } from '../utils/fetch-with-retry.ts';
+import { collectSSEStream } from '../utils/parse-sse-stream.ts';
+import { logger } from './logger.ts';
 
 function buildSystemPrompt(targetLang: string): string {
   return `You are a Markdown translator. Translate the following Markdown document into ${targetLang}.
@@ -16,14 +18,6 @@ Rules:
 - Keep technical terms in their original form when appropriate
 - Translate all other text naturally and fluently
 - Output only the translated Markdown, no explanations`;
-}
-
-interface LLMResponse {
-  choices: Array<{
-    message: {
-      content: string;
-    };
-  }>;
 }
 
 export interface MarkdownTranslator {
@@ -46,6 +40,9 @@ export class LLMTranslator implements MarkdownTranslator {
   }
 
   async call(markdown: string): Promise<string> {
+    const startTime = Date.now();
+    logger.info(`LLM translate 요청 시작 (입력 ${markdown.length}자)`);
+
     const response = await fetchWithRetry(`${this.config.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -59,6 +56,7 @@ export class LLMTranslator implements MarkdownTranslator {
           { role: 'user', content: markdown },
         ],
         temperature: 0,
+        stream: true,
       }),
     });
 
@@ -67,7 +65,6 @@ export class LLMTranslator implements MarkdownTranslator {
       throw new Error(`LLM API 오류: ${response.status} - ${error}`);
     }
 
-    const data = (await response.json()) as LLMResponse;
-    return data.choices[0]?.message?.content || '';
+    return collectSSEStream(response, { label: 'translate', startTime });
   }
 }

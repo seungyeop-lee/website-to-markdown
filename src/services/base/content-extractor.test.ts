@@ -2,6 +2,14 @@ import { test, expect, describe, mock, beforeEach, afterEach } from 'bun:test';
 import { ContentExtractor } from './content-extractor.ts';
 import { LLMClient, NullRefiner } from '../../infrastructure/llm-refiner.ts';
 
+function createSSEResponse(...chunks: string[]): Response {
+  const events = [
+    ...chunks.map(c => `data: ${JSON.stringify({ choices: [{ delta: { content: c } }] })}\n\n`),
+    'data: [DONE]\n\n',
+  ].join('');
+  return new Response(events, { status: 200 });
+}
+
 describe('ContentExtractor', () => {
   const testConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
   let originalFetch: typeof globalThis.fetch;
@@ -29,14 +37,7 @@ describe('ContentExtractor', () => {
     // @ts-expect-error: mock doesn't include preconnect
     globalThis.fetch = mock((_url: string, options: any) => {
       receivedBody = JSON.parse(options.body);
-      return Promise.resolve(
-        new Response(
-          JSON.stringify({
-            choices: [{ message: { content: '# Clean Content' } }],
-          }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        )
-      );
+      return Promise.resolve(createSSEResponse('# Clean Content'));
     });
 
     const extractor = new ContentExtractor(new LLMClient(testConfig));
@@ -55,14 +56,7 @@ describe('ContentExtractor', () => {
     // @ts-expect-error: mock doesn't include preconnect
     globalThis.fetch = mock(() => {
       callCount++;
-      return Promise.resolve(
-        new Response(
-          JSON.stringify({
-            choices: [{ message: { content: '# Extracted Content' } }],
-          }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        )
-      );
+      return Promise.resolve(createSSEResponse('# Extracted Content'));
     });
 
     const extractor = new ContentExtractor(new LLMClient(testConfig));
@@ -76,14 +70,7 @@ describe('ContentExtractor', () => {
     // @ts-expect-error: mock doesn't include preconnect
     globalThis.fetch = mock((_url: string, options: any) => {
       receivedBody = JSON.parse(options.body);
-      return Promise.resolve(
-        new Response(
-          JSON.stringify({
-            choices: [{ message: { content: 'Content' } }],
-          }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        )
-      );
+      return Promise.resolve(createSSEResponse('Content'));
     });
 
     const extractor = new ContentExtractor(new LLMClient(testConfig));

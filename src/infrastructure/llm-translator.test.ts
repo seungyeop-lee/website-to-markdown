@@ -1,6 +1,14 @@
 import { test, expect, describe, mock } from 'bun:test';
 import { LLMTranslator, NullTranslator } from './llm-translator.ts';
 
+function createSSEResponse(...chunks: string[]): Response {
+  const events = [
+    ...chunks.map(c => `data: ${JSON.stringify({ choices: [{ delta: { content: c } }] })}\n\n`),
+    'data: [DONE]\n\n',
+  ].join('');
+  return new Response(events, { status: 200 });
+}
+
 describe('NullTranslator', () => {
   test('마크다운을 그대로 반환', async () => {
     const translator = new NullTranslator();
@@ -30,18 +38,11 @@ describe('LLMTranslator', () => {
     }
   });
 
-  test('성공 시 번역된 content 반환', async () => {
+  test('성공 시 스트리밍 번역된 content 반환', async () => {
     const originalFetch = globalThis.fetch;
     // @ts-expect-error: mock doesn't include preconnect
     globalThis.fetch = mock(() =>
-      Promise.resolve(
-        new Response(
-          JSON.stringify({
-            choices: [{ message: { content: '# 안녕하세요\n\n세계' } }],
-          }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        )
-      )
+      Promise.resolve(createSSEResponse('# 안녕하세요', '\n\n세계'))
     );
 
     try {
@@ -59,14 +60,7 @@ describe('LLMTranslator', () => {
     // @ts-expect-error: mock doesn't include preconnect
     globalThis.fetch = mock((_url: string, options: any) => {
       receivedBody = JSON.parse(options.body);
-      return Promise.resolve(
-        new Response(
-          JSON.stringify({
-            choices: [{ message: { content: 'translated' } }],
-          }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        )
-      );
+      return Promise.resolve(createSSEResponse('translated'));
     });
 
     try {
@@ -75,6 +69,24 @@ describe('LLMTranslator', () => {
 
       const systemMessage = receivedBody.messages[0].content;
       expect(systemMessage).toContain('ko');
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('요청 body에 stream: true 포함', async () => {
+    const originalFetch = globalThis.fetch;
+    let receivedBody: any;
+    // @ts-expect-error: mock doesn't include preconnect
+    globalThis.fetch = mock((_url: string, options: any) => {
+      receivedBody = JSON.parse(options.body);
+      return Promise.resolve(createSSEResponse('ok'));
+    });
+
+    try {
+      const translator = new LLMTranslator(testConfig, 'ko');
+      await translator.call('# Hello');
+      expect(receivedBody.stream).toBe(true);
     } finally {
       globalThis.fetch = originalFetch;
     }
