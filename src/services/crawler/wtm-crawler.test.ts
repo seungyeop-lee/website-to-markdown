@@ -1,15 +1,7 @@
-import { test, expect, describe, mock, beforeEach } from 'bun:test';
+import { test, expect, describe, mock } from 'bun:test';
 import { CrawlConfig } from './crawl-config.ts';
 import { WtmCrawler } from './wtm-crawler.ts';
 import type { WtmResult } from '../../types.ts';
-
-// Bun.write mock
-const writtenFiles: { path: string; content: string }[] = [];
-// @ts-expect-error: mock Bun.write
-Bun.write = mock((path: string, content: string) => {
-  writtenFiles.push({ path, content });
-  return Promise.resolve(content.length);
-});
 
 function makeResult(url: string, links: string[] = []): WtmResult {
   const urlObj = new URL(url);
@@ -26,9 +18,6 @@ function makeResult(url: string, links: string[] = []): WtmResult {
 }
 
 describe('WtmCrawler', () => {
-  beforeEach(() => {
-    writtenFiles.length = 0;
-  });
 
   describe('crawl', () => {
     test('시작 URL만 크롤링 (링크 없음)', async () => {

@@ -7,7 +7,6 @@ import { logger } from '../../infrastructure/logger.ts';
 import { normalizeUrl } from '../../utils/url-normalizer.ts';
 import type { CrawlConfig } from './crawl-config.ts';
 import { UrlScopeFilter } from './url-scope-filter.ts';
-import { WtmFileWriter } from './wtm-file-writer.ts';
 import type {WtmConverter} from "../base/types.ts";
 
 export interface CrawlResult {
@@ -26,7 +25,6 @@ export class WtmCrawler {
   }
 
   async crawl(startUrl: string): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.converter, this.config.outputDir);
     const scopeFilter = new UrlScopeFilter(startUrl, this.config.scopeLevels, this.config.maxPathDepth);
 
     const visited = new Set<string>();
@@ -49,7 +47,7 @@ export class WtmCrawler {
       const results = await Promise.allSettled(
         batch.map(async ({ url, depth }) => {
           logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.config.maxLinkDepth}): ${url}`);
-          const result = await writer.write(url);
+          const result = await this.converter.convert(url);
           return { url, depth, links: result.metadata.links };
         }),
       );

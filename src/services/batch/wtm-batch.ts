@@ -7,6 +7,7 @@ import { BrowserManager } from '../../infrastructure/browser-manager.ts';
 import type { BatchConvertOptions } from '../../types.ts';
 import { WtmConfig } from '../wtm/wtm-config.ts';
 import { DefaultWtmConverter } from '../wtm/wtm-converter.ts';
+import { WtmFileWriter } from '../base/wtm-file-writer.ts';
 import type { CrawlResult } from '../crawler/wtm-crawler.ts';
 import { BatchConvertConfig } from './batch-convert-config.ts';
 import { WtmBatchConverter } from './wtm-batch-converter.ts';
@@ -19,8 +20,10 @@ export type { CrawlResult };
 export async function wtmUrls(urls: string[], options: BatchConvertOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
+    const batchConfig = new BatchConvertConfig(options);
     const converter = new DefaultWtmConverter(browserManager, new WtmConfig(options));
-    const batchConverter = new WtmBatchConverter(converter, new BatchConvertConfig(options));
+    const writer = new WtmFileWriter(converter, batchConfig.outputDir);
+    const batchConverter = new WtmBatchConverter(writer, batchConfig);
     return await batchConverter.convert(urls);
   } finally {
     await browserManager.close();

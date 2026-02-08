@@ -83,7 +83,7 @@ describe('WtmFileWriter', () => {
 
       try {
         const writer = new WtmFileWriter(mockConverter, '/output');
-        const result = await writer.write('https://example.com/docs/api');
+        const result = await writer.convert('https://example.com/docs/api');
 
         expect(mockConvert).toHaveBeenCalledTimes(1);
         expect(mockConvert).toHaveBeenCalledWith('https://example.com/docs/api');
@@ -107,7 +107,7 @@ describe('WtmFileWriter', () => {
 
       try {
         const writer = new WtmFileWriter(mockConverter, '/output');
-        await writer.write('https://example.com/docs/api?lang=ko&page=2');
+        await writer.convert('https://example.com/docs/api?lang=ko&page=2');
 
         expect(written).toHaveLength(1);
         expect(written[0]!.path).toMatch(/^\/output\/docs\/api__lang-ko_page-2__h[a-f0-9]{8}\.md$/);

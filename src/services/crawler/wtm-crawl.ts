@@ -9,6 +9,7 @@ import {WtmConfig} from '../wtm/wtm-config.ts';
 import {DefaultWtmConverter} from '../wtm/wtm-converter.ts';
 import {CrawlConfig} from './crawl-config.ts';
 import {type CrawlResult, WtmCrawler} from './wtm-crawler.ts';
+import {WtmFileWriter} from '../base/wtm-file-writer.ts';
 
 export type { CrawlResult };
 
@@ -18,8 +19,10 @@ export type { CrawlResult };
 export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
+    const crawlConfig = new CrawlConfig(options);
     const converter = new DefaultWtmConverter(browserManager, new WtmConfig(options));
-    const crawler = new WtmCrawler(converter, new CrawlConfig(options));
+    const writer = new WtmFileWriter(converter, crawlConfig.outputDir);
+    const crawler = new WtmCrawler(writer, crawlConfig);
     return await crawler.crawl(startUrl);
   } finally {
     await browserManager.close();

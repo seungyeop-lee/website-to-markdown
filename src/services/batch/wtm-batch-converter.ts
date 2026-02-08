@@ -5,7 +5,6 @@
 
 import { logger } from '../../infrastructure/logger.ts';
 import type { WtmConverter } from '../base/types.ts';
-import { WtmFileWriter } from '../crawler/wtm-file-writer.ts';
 import type { CrawlResult } from '../crawler/wtm-crawler.ts';
 import type { BatchConvertConfig } from './batch-convert-config.ts';
 
@@ -19,8 +18,6 @@ export class WtmBatchConverter {
   }
 
   async convert(urls: string[]): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.converter, this.config.outputDir);
-
     const succeeded: string[] = [];
     const failed: { url: string; error: string }[] = [];
 
@@ -31,7 +28,7 @@ export class WtmBatchConverter {
       const results = await Promise.allSettled(
         batch.map(async (url) => {
           logger.info(`변환 #${++processedCount}/${urls.length}: ${url}`);
-          await writer.write(url);
+          await this.converter.convert(url);
           return url;
         }),
       );
