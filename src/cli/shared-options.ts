@@ -9,12 +9,12 @@ export interface CommonOptions {
 export function buildWtmOptions(options: CommonOptions): WtmOptions {
   const needsLlmConfig = options.llmRefine || options.llmTranslate;
   return {
-    llm: needsLlmConfig ? {
-      enable: options.llmRefine ?? false,
+    llmConfig: needsLlmConfig ? {
       baseUrl: process.env.OPENAI_API_BASE_URL,
       apiKey: process.env.OPENAI_API_KEY,
       model: process.env.OPENAI_API_MODEL,
     } : undefined,
+    llmRefine: options.llmRefine ?? false,
     llmTranslate: options.llmTranslate,
     debug: options.debug ?? false,
   };

@@ -3,16 +3,15 @@
  * 책임: WtmOptions의 validation + 기본값 적용
  */
 
-import type { LLMConfig } from '../../infrastructure/llm-refiner.ts';
-import type { WtmOptions } from '../../types.ts';
+import type { LLMConfig, WtmOptions } from '../../types.ts';
 
 export class WtmConfig {
   readonly debug: boolean;
   readonly llm: LLMConfig;
+  readonly llmRefine: boolean;
   readonly llmTranslate?: string;
 
   private static readonly LLM_DEFAULTS: LLMConfig = {
-    enable: false,
     baseUrl: '',
     apiKey: '',
     model: '',
@@ -20,10 +19,11 @@ export class WtmConfig {
 
   constructor(options?: WtmOptions) {
     this.debug = options?.debug ?? false;
+    this.llmRefine = options?.llmRefine ?? false;
     this.llmTranslate = options?.llmTranslate;
-    this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options?.llm };
+    this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options?.llmConfig };
 
-    if (this.llm.enable || this.llmTranslate) {
+    if (this.llmRefine || this.llmTranslate) {
       this.validateLLMConfig(this.llm);
     }
   }

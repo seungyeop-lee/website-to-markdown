@@ -3,7 +3,7 @@ import { ContentExtractor } from './content-extractor.ts';
 import { LLMClient, NullRefiner } from '../../infrastructure/llm-refiner.ts';
 
 describe('ContentExtractor', () => {
-  const testConfig = { enable: true, baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
+  const testConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
   let originalFetch: typeof globalThis.fetch;
 
   beforeEach(() => {

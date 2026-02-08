@@ -3,7 +3,7 @@
  * 책임: LLM API를 통한 마크다운 번역만 담당
  */
 
-import type { LLMConfig } from './llm-refiner.ts';
+import type { LLMConfig } from '../types.ts';
 import { fetchWithRetry } from '../utils/fetch-with-retry.ts';
 
 function buildSystemPrompt(targetLang: string): string {

@@ -22,7 +22,7 @@ export class DefaultWtmConverter implements WtmConverter {
     this.config = config;
     logger.init(this.config.debug);
 
-    const refiner = this.config.llm.enable ? new LLMClient(this.config.llm) : new NullRefiner();
+    const refiner = this.config.llmRefine ? new LLMClient(this.config.llm) : new NullRefiner();
     this.translator = this.config.llmTranslate ? new LLMTranslator(this.config.llm, this.config.llmTranslate) : new NullTranslator();
     this.pageRenderer = new PageRenderer(browserManager);
     this.contentExtractor = new ContentExtractor(refiner);

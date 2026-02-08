@@ -192,8 +192,8 @@ console.log(result.metadata);    // { url, origin, pathname, title, links }
 
 // LLM 후처리 활성화
 const result = await wtm('https://example.com/article', {
-  llm: {
-    enable: true,
+  llmRefine: true,
+  llmConfig: {
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
@@ -203,8 +203,7 @@ const result = await wtm('https://example.com/article', {
 // 한국어로 번역
 const result = await wtm('https://example.com/article', {
   llmTranslate: 'ko',
-  llm: {
-    enable: false,
+  llmConfig: {
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
@@ -213,9 +212,9 @@ const result = await wtm('https://example.com/article', {
 
 // LLM 정제 + 번역
 const result = await wtm('https://example.com/article', {
+  llmRefine: true,
   llmTranslate: 'ko',
-  llm: {
-    enable: true,
+  llmConfig: {
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
@@ -225,8 +224,8 @@ const result = await wtm('https://example.com/article', {
 // 디버그 모드
 const result = await wtm('https://example.com/article', {
   debug: true,
-  llm: {
-    enable: true,
+  llmRefine: true,
+  llmConfig: {
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',

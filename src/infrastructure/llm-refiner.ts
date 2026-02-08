@@ -3,6 +3,7 @@
  * 책임: LLM API 호출만 담당
  */
 
+import type { LLMConfig } from '../types.ts';
 import { fetchWithRetry } from '../utils/fetch-with-retry.ts';
 
 const SYSTEM_PROMPT = `You are a Markdown post-processor. You receive a Markdown document that was converted from a web page by an automated tool. The conversion already extracted basic structure, but noise and artifacts remain. Your job is to clean it up.
@@ -17,13 +18,6 @@ Rules:
 - Fix formatting artifacts from the HTML-to-Markdown conversion (e.g. broken headings, extra whitespace)
 - Do not summarize or rewrite - preserve the full original content
 - Output only the cleaned Markdown, no explanations`;
-
-export interface LLMConfig {
-  enable: boolean;
-  baseUrl: string;
-  apiKey: string;
-  model: string;
-}
 
 interface LLMResponse {
   choices: Array<{

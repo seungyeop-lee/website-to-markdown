@@ -17,24 +17,24 @@ describe('buildWtmOptions', () => {
   test('llmRefine 활성화 시 환경변수에서 LLM 설정을 읽음', () => {
     const result = buildWtmOptions({ llmRefine: true });
 
-    expect(result.llm).toEqual({
-      enable: true,
+    expect(result.llmConfig).toEqual({
       baseUrl: 'https://api.test.com',
       apiKey: 'test-key',
       model: 'gpt-4',
     });
+    expect(result.llmRefine).toBe(true);
   });
 
   test('llmRefine 미지정 시 llm 설정을 포함하지 않음', () => {
     const result = buildWtmOptions({});
 
-    expect(result.llm).toBeUndefined();
+    expect(result.llmConfig).toBeUndefined();
   });
 
   test('llmTranslate 옵션이 있으면 llmRefine 미지정이어도 LLM 설정 포함', () => {
     const result = buildWtmOptions({ llmTranslate: 'ko' });
 
-    expect(result.llm).toBeDefined();
+    expect(result.llmConfig).toBeDefined();
     expect(result.llmTranslate).toBe('ko');
   });
 

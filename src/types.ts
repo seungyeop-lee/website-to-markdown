@@ -2,7 +2,12 @@
  * 공유 타입 정의
  */
 import type { Browser } from 'playwright';
-import type { LLMConfig } from "./infrastructure/llm-refiner.ts";
+
+export interface LLMConfig {
+  baseUrl: string;
+  apiKey: string;
+  model: string;
+}
 
 export interface BrowserProvider {
   getBrowser(): Promise<Browser>;
@@ -28,7 +33,8 @@ export interface WtmResult {
 }
 
 export interface WtmOptions {
-  llm?: Partial<LLMConfig>;
+  llmConfig?: Partial<LLMConfig>;
+  llmRefine?: boolean;
   llmTranslate?: string;
   debug?: boolean;
 }

@@ -1,8 +1,9 @@
 import { test, expect, describe, mock } from 'bun:test';
-import {LLMClient, type LLMConfig} from './llm-refiner.ts';
+import { LLMClient } from './llm-refiner.ts';
+import type { LLMConfig } from '../types.ts';
 
 describe('LLMClient', () => {
-  const testConfig: LLMConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model', enable: true };
+  const testConfig: LLMConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
 
   test('API 오류 시 에러 메시지 포함', async () => {
     const originalFetch = globalThis.fetch;

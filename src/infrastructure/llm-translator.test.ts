@@ -13,7 +13,7 @@ describe('NullTranslator', () => {
 });
 
 describe('LLMTranslator', () => {
-  const testConfig = { enable: true, baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
+  const testConfig = { baseUrl: 'https://api.test.com', apiKey: 'test-key', model: 'test-model' };
 
   test('API 오류 시 에러 메시지 포함', async () => {
     const originalFetch = globalThis.fetch;
