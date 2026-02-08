@@ -117,6 +117,9 @@ wtm crawl --url https://example.com/docs/intro --output-dir ./docs --llm-refine
 | `--path-depth <n>` | `-p` | scope 기준 하위 경로 최대 깊이 |  1   |
 | `--scope <n>` | `-s` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) |  0   |
 | `--concurrency <n>` | `-c` | 동시 처리 수 |  3   |
+| `--llm-refine` | `-r` | LLM 후처리로 마크다운 정제 | false |
+| `--llm-translate <lang>` | `-t` | LLM 기반 번역 대상 언어 | — |
+| `--log-level <level>` | `-L` | 로그 레벨 (`debug`, `info`, `error`) | info |
 
 **스코프 레벨 설명:**
 
@@ -169,6 +172,9 @@ wtm batch --urls urls.txt --output-dir ./docs --concurrency 5
 | `--urls <file>` | `-f` | URL 목록 파일 경로 (한 줄에 하나씩) | (필수) |
 | `--output-dir <dir>` | `-D` | 결과 파일 저장 디렉토리 | (필수) |
 | `--concurrency <n>` | `-c` | 동시 처리 수 |  3   |
+| `--llm-refine` | `-r` | LLM 후처리로 마크다운 정제 | false |
+| `--llm-translate <lang>` | `-t` | LLM 기반 번역 대상 언어 | — |
+| `--log-level <level>` | `-L` | 로그 레벨 (`debug`, `info`, `error`) | info |
 
 ### 파일명 규칙 (crawl / batch 공통)
 
@@ -179,6 +185,8 @@ wtm batch --urls urls.txt --output-dir ./docs --concurrency 5
 - 쿼리 키 순서는 자동 정렬되어 동일 쿼리는 같은 파일명으로 저장됩니다.
 
 ## 라이브러리 사용법
+
+### wtm() — 단일 페이지 변환
 
 `wtm()`은 `WtmResult` 객체를 반환합니다: `{ markdown, metadata }`.
 
@@ -231,6 +239,35 @@ const result = await wtm('https://example.com/article', {
     model: 'gpt-4o-mini',
   },
 });
+```
+
+### wtmCrawl() — 링크 추적 크롤링
+
+시작 URL에서 링크를 따라가며 크롤링하여 Markdown 파일로 저장합니다.
+
+```ts
+import { wtmCrawl } from '@seungyeop-lee/website-to-markdown';
+
+const result = await wtmCrawl('https://example.com/docs/intro', {
+  outputDir: './docs',
+  maxLinkDepth: 3,
+  maxPathDepth: 1,
+  scopeLevels: 0,
+  concurrency: 3,
+});
+```
+
+### wtmUrls() — URL 목록 배치 변환
+
+URL 목록을 받아 링크 추적 없이 일괄 변환합니다.
+
+```ts
+import { wtmUrls } from '@seungyeop-lee/website-to-markdown';
+
+const result = await wtmUrls(
+  ['https://example.com/page1', 'https://example.com/page2'],
+  { outputDir: './docs', concurrency: 3 },
+);
 ```
 
 ## 환경변수
