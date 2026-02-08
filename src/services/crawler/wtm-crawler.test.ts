@@ -200,45 +200,4 @@ describe('WtmCrawler', () => {
     });
   });
 
-  describe('crawlUrls', () => {
-    test('URL 리스트를 일괄 처리', async () => {
-      const convertMock = mock((url: string) =>
-        Promise.resolve(makeResult(url)),
-      );
-      const converter = { convert: convertMock };
-
-      const crawler = new WtmCrawler(converter, new CrawlConfig({
-        outputDir: '/out',
-      }));
-
-      const urls = [
-        'https://example.com/a',
-        'https://example.com/b',
-        'https://example.com/c',
-      ];
-
-      const result = await crawler.crawlUrls(urls);
-
-      expect(result.succeeded).toHaveLength(3);
-      expect(result.failed).toHaveLength(0);
-      expect(result.skipped).toHaveLength(0);
-      expect(convertMock).toHaveBeenCalledTimes(3);
-    });
-
-    test('링크를 따라가지 않음', async () => {
-      const convertMock = mock((url: string) =>
-        Promise.resolve(makeResult(url, ['https://example.com/should-not-follow'])),
-      );
-      const converter = { convert: convertMock };
-
-      const crawler = new WtmCrawler(converter, new CrawlConfig({
-        outputDir: '/out',
-      }));
-
-      const result = await crawler.crawlUrls(['https://example.com/a']);
-
-      expect(convertMock).toHaveBeenCalledTimes(1);
-      expect(result.succeeded).toEqual(['https://example.com/a']);
-    });
-  });
 });

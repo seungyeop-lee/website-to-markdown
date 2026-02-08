@@ -227,12 +227,12 @@ export class HarnessCaseRegistry {
       },
       {
         id: 'core-crawl-urls-query-filenames',
-        title: 'crawl --urls query filename uniqueness',
+        title: 'batch --urls query filename uniqueness',
         suite: 'core',
         args: (ctx) => {
           const urlsFile = join(ctx.actualRoot, 'inputs', 'query-urls.txt');
           const outputDir = join(ctx.actualRoot, 'crawl-query');
-          return ['crawl', '--no-llm', '--urls', urlsFile, '--output-dir', outputDir];
+          return ['batch', '--no-llm', '--urls', urlsFile, '--output-dir', outputDir];
         },
         beforeRun: async (ctx) => {
           const inputDir = join(ctx.actualRoot, 'inputs');

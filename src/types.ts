@@ -33,6 +33,11 @@ export interface WtmOptions {
   debug?: boolean;
 }
 
+export interface BatchConvertOptions extends WtmOptions {
+  outputDir: string;
+  concurrency?: number;
+}
+
 export interface CrawlOptions extends WtmOptions {
   outputDir: string;
   maxLinkDepth?: number;

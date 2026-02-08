@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { registerConvertCommand } from './convert-command.ts';
 import { registerCrawlCommand } from './crawl-command.ts';
+import { registerBatchCommand } from './batch-command.ts';
 
 const program = new Command()
   .name('wtm')
@@ -11,6 +12,7 @@ const program = new Command()
 
 registerConvertCommand(program);
 registerCrawlCommand(program);
+registerBatchCommand(program);
 
 if (process.argv.length <= 2) {
   program.help();

@@ -4,12 +4,11 @@ import { buildWtmOptions } from './shared-options.ts';
 
 export type CrawlCliOptions = CommonOptions & {
   outputDir: string;
-  url?: string;
+  url: string;
   linkDepth: string;
   pathDepth: string;
   scope: string;
   concurrency: string;
-  urls?: string;
 };
 
 export function buildCrawlOptions(options: CrawlCliOptions): CrawlOptions {

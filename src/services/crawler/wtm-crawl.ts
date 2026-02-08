@@ -25,19 +25,3 @@ export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise
     await browserManager.close();
   }
 }
-
-/**
- * URL 목록을 받아 일괄 변환한다. 링크를 따라가지 않는다.
- */
-export async function wtmCrawlUrls(urls: string[], options: CrawlOptions): Promise<CrawlResult> {
-  const browserManager = new BrowserManager();
-  try {
-    const wtmConfig = new WtmConfig(options);
-    const converter = new DefaultWtmConverter(browserManager, wtmConfig);
-    const crawlConfig = new CrawlConfig(options);
-    const crawler = new WtmCrawler(converter, crawlConfig);
-    return await crawler.crawlUrls(urls);
-  } finally {
-    await browserManager.close();
-  }
-}

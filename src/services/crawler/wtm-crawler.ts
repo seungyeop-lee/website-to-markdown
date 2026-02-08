@@ -136,40 +136,4 @@ export class WtmCrawler {
     logger.debug(`링크 분석: 발견 ${links.length}, 추가 ${added}, 중복 ${duplicated}, scope 밖 ${outOfScope}`);
   }
 
-  async crawlUrls(urls: string[]): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.converter, this.config.outputDir);
-
-    const succeeded: string[] = [];
-    const failed: { url: string; error: string }[] = [];
-
-    // concurrency만큼 배치 처리
-    let processedCount = 0;
-    for (let i = 0; i < urls.length; i += this.config.concurrency) {
-      const batch = urls.slice(i, i + this.config.concurrency);
-
-      const results = await Promise.allSettled(
-        batch.map(async (url) => {
-          logger.info(`변환 #${++processedCount}/${urls.length}: ${url}`);
-          await writer.write(url);
-          return url;
-        }),
-      );
-
-      for (const result of results) {
-        if (result.status === 'fulfilled') {
-          succeeded.push(result.value);
-        } else {
-          const url = batch[results.indexOf(result)]!;
-          const error = result.reason instanceof Error
-            ? result.reason.message
-            : String(result.reason);
-          failed.push({ url, error });
-          logger.info(`변환 실패: ${url} - ${error}`);
-        }
-      }
-    }
-
-    logger.info(`변환 완료: 성공 ${succeeded.length}, 실패 ${failed.length}`);
-    return { succeeded, failed, skipped: [] };
-  }
 }
