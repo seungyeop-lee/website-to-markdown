@@ -17,10 +17,6 @@ const DEFAULT_CONFIG: RetryConfig = {
   timeoutMs: 60000,
 };
 
-function isRetryable(status: number): boolean {
-  return status === 429 || status >= 500;
-}
-
 export async function fetchWithRetry(
   url: string,
   init: RequestInit,
@@ -56,4 +52,8 @@ export async function fetchWithRetry(
   }
 
   throw lastError!;
+}
+
+function isRetryable(status: number): boolean {
+  return status === 429 || status >= 500;
 }

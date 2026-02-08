@@ -17,13 +17,13 @@ export interface CrawlResult {
 }
 
 export class WtmCrawler {
-  private maxLinkDepth: number;
-  private maxPathDepth?: number;
-  private scopeLevels: number;
-  private concurrency: number;
-  private outputDir: string;
-  private wtmOptions: WtmOptions;
-  private wtmFn: WtmFn;
+  private readonly maxLinkDepth: number;
+  private readonly maxPathDepth?: number;
+  private readonly scopeLevels: number;
+  private readonly concurrency: number;
+  private readonly outputDir: string;
+  private readonly wtmOptions: WtmOptions;
+  private readonly wtmFn: WtmFn;
 
   constructor(wtmFn: WtmFn, options: CrawlOptions) {
     this.wtmFn = wtmFn;

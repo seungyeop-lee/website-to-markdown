@@ -4,9 +4,9 @@
  */
 
 export class UrlScopeFilter {
-  private origin: string;
-  private scopePrefix: string;
-  private maxPathDepth?: number;
+  private readonly origin: string;
+  private readonly scopePrefix: string;
+  private readonly maxPathDepth?: number;
 
   constructor(startUrl: string, scopeLevels: number = 0, maxPathDepth?: number) {
     const urlObj = new URL(startUrl);
