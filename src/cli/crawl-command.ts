@@ -16,8 +16,8 @@ export function registerCrawlCommand(program: Command): void {
     .option('--scope <n>', '[선택] 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...)', '0')
     .option('--concurrency <n>', '[선택] 동시 처리 수', '3')
     .option('--debug', '[선택] 파이프라인 각 스텝의 시작/종료 및 결과물 출력')
-    .option('--no-llm', '[선택] LLM 후처리 없이 기본 마크다운 변환만 수행')
-    .option('--translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
+    .option('--llm-refine', '[선택] LLM 후처리로 마크다운 정제')
+    .option('--llm-translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
     .showHelpAfterError()
     .addHelpText('after', ENV_HELP)
     .action(async (options: CrawlCliOptions) => {

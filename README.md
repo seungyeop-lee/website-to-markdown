@@ -1,6 +1,6 @@
 # wtm - Website to Markdown
 
-웹 사이트 URL을 입력받아 LLM을 통해 핵심 본문을 추출하고 Markdown으로 변환하는 CLI 도구 및 라이브러리.
+웹 사이트 URL을 입력받아 핵심 본문을 추출하고 Markdown으로 변환하는 CLI 도구 및 라이브러리.
 
 > **요구사항:** [Bun](https://bun.sh) 런타임 필수
 
@@ -8,8 +8,8 @@
 
 - SPA/JavaScript 렌더링 사이트 지원 (Playwright + Stealth 플러그인)
 - [mdream](https://github.com/nichochar/mdream) 기반 HTML → Markdown 변환 (본문 추출, 노이즈 필터링, Tailwind 처리)
-- LLM 후처리를 통한 마크다운 정제 (선택 사항)
-- LLM 기반 다국어 번역 (`--translate <lang>`)
+- LLM 후처리를 통한 마크다운 정제 (`--llm-refine`, 선택 사항)
+- LLM 기반 다국어 번역 (`--llm-translate <lang>`, 선택 사항)
 - YAML frontmatter 자동 생성 (url, createdAt)
 - `--debug` 모드로 파이프라인 각 스텝 로깅
 - 다중 페이지 크롤링 (`wtm crawl`) — 링크 추적, 스코프 필터링, 병렬 처리
@@ -20,10 +20,14 @@
 ## Quick Start
 
 ```bash
+# 기본 변환 (LLM 불필요, 환경변수 없이 바로 사용 가능)
+bunx @seungyeop-lee/website-to-markdown convert https://example.com/article
+
+# LLM 정제를 함께 사용하려면 환경변수 설정 후 --llm-refine 추가
 OPENAI_API_BASE_URL=https://api.openai.com/v1 \
 OPENAI_API_KEY=your-api-key \
 OPENAI_API_MODEL=gpt-4o-mini \
-bunx @seungyeop-lee/website-to-markdown convert https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --llm-refine https://example.com/article
 ```
 
 ## 설치
@@ -34,8 +38,8 @@ bun add @seungyeop-lee/website-to-markdown
 
 ## CLI 사용법
 
+LLM 기능(`--llm-refine`, `--llm-translate`)을 사용할 경우 환경변수 설정이 필요합니다.
 실행 디렉토리에 `.env` 파일을 생성하면 Bun이 자동으로 로드합니다.
-`.env` 파일이 없는 경우 환경변수를 직접 설정해야 합니다.
 
 ```sh
 OPENAI_API_BASE_URL=https://api.openai.com/v1
@@ -44,17 +48,17 @@ OPENAI_API_MODEL=gpt-4o-mini
 ```
 
 ```bash
-# 실행
+# 기본 변환 (LLM 없이)
 bunx @seungyeop-lee/website-to-markdown convert https://example.com/article
 
-# LLM 후처리 없이 기본 마크다운 변환만 수행
-bunx @seungyeop-lee/website-to-markdown convert --no-llm https://example.com/article
+# LLM 후처리로 마크다운 정제
+bunx @seungyeop-lee/website-to-markdown convert --llm-refine https://example.com/article
 
 # 마크다운을 한국어로 번역
-bunx @seungyeop-lee/website-to-markdown convert --translate ko https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --llm-translate ko https://example.com/article
 
-# LLM 정제 없이 번역만 수행
-bunx @seungyeop-lee/website-to-markdown convert --no-llm --translate ko https://example.com/article
+# LLM 정제 + 번역
+bunx @seungyeop-lee/website-to-markdown convert --llm-refine --llm-translate ko https://example.com/article
 
 # 디버그 모드 (파이프라인 각 스텝 로깅)
 bunx @seungyeop-lee/website-to-markdown convert --debug https://example.com/article
@@ -74,9 +78,9 @@ bun install -g @seungyeop-lee/website-to-markdown
 
 ```bash
 wtm convert https://example.com/article
-wtm convert --no-llm https://example.com/article
-wtm convert --translate ko https://example.com/article
-wtm convert --no-llm --translate ko https://example.com/article
+wtm convert --llm-refine https://example.com/article
+wtm convert --llm-translate ko https://example.com/article
+wtm convert --llm-refine --llm-translate ko https://example.com/article
 wtm convert --debug https://example.com/article
 wtm convert https://example.com/article > output.md
 wtm convert -o output.md https://example.com/article
@@ -99,8 +103,8 @@ wtm crawl --url https://example.com/docs/intro --output-dir ./docs --path-depth 
 # 동시 처리 수 조절
 wtm crawl --url https://example.com/docs/intro --output-dir ./docs --concurrency 5
 
-# LLM 없이 크롤링
-wtm crawl --url https://example.com/docs/intro --output-dir ./docs --no-llm
+# LLM 정제와 함께 크롤링
+wtm crawl --url https://example.com/docs/intro --output-dir ./docs --llm-refine
 ```
 
 **옵션:**
@@ -151,8 +155,8 @@ URL 목록 파일을 읽어 링크 추적 없이 지정된 URL만 일괄 변환�
 # URL 목록 파일로 배치 변환
 wtm batch --urls urls.txt --output-dir ./docs
 
-# LLM 없이 배치 변환
-wtm batch --urls urls.txt --output-dir ./docs --no-llm
+# LLM 정제와 함께 배치 변환
+wtm batch --urls urls.txt --output-dir ./docs --llm-refine
 
 # 동시 처리 수 조절
 wtm batch --urls urls.txt --output-dir ./docs --concurrency 5
@@ -181,6 +185,11 @@ wtm batch --urls urls.txt --output-dir ./docs --concurrency 5
 ```ts
 import { wtm } from '@seungyeop-lee/website-to-markdown';
 
+// 기본 마크다운 변환 (LLM 불필요)
+const result = await wtm('https://example.com/article');
+console.log(result.markdown);    // Markdown 문자열
+console.log(result.metadata);    // { url, origin, pathname, title, links }
+
 // LLM 후처리 활성화
 const result = await wtm('https://example.com/article', {
   llm: {
@@ -190,28 +199,23 @@ const result = await wtm('https://example.com/article', {
     model: 'gpt-4o-mini',
   },
 });
-console.log(result.markdown);    // Markdown 문자열
-console.log(result.metadata);    // { url, origin, pathname, title, links }
 
-// LLM 후처리 비활성화 (기본 마크다운 변환만 수행)
-const result = await wtm('https://example.com/article');
-
-// 한국어로 번역 (LLM 정제 + 번역)
+// 한국어로 번역
 const result = await wtm('https://example.com/article', {
-  translate: 'ko',
+  llmTranslate: 'ko',
   llm: {
-    enable: true,
+    enable: false,
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
   },
 });
 
-// LLM 정제 없이 번역만 수행
+// LLM 정제 + 번역
 const result = await wtm('https://example.com/article', {
-  translate: 'ko',
+  llmTranslate: 'ko',
   llm: {
-    enable: false,
+    enable: true,
     baseUrl: 'https://api.openai.com/v1',
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
@@ -234,9 +238,9 @@ const result = await wtm('https://example.com/article', {
 
 | 변수 | 설명 | 필수 |
 |------|------|:----:|
-| `OPENAI_API_BASE_URL` | OpenAI API 베이스 URL | LLM 정제 또는 번역 사용 시 |
-| `OPENAI_API_KEY` | OpenAI API 키 | LLM 정제 또는 번역 사용 시 |
-| `OPENAI_API_MODEL` | 모델명 | LLM 정제 또는 번역 사용 시 |
+| `OPENAI_API_BASE_URL` | OpenAI API 베이스 URL | `--llm-refine` 또는 `--llm-translate` 사용 시 |
+| `OPENAI_API_KEY` | OpenAI API 키 | `--llm-refine` 또는 `--llm-translate` 사용 시 |
+| `OPENAI_API_MODEL` | 모델명 | `--llm-refine` 또는 `--llm-translate` 사용 시 |
 
 ---
 

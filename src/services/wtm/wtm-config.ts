@@ -9,7 +9,7 @@ import type { WtmOptions } from '../../types.ts';
 export class WtmConfig {
   readonly debug: boolean;
   readonly llm: LLMConfig;
-  readonly translate?: string;
+  readonly llmTranslate?: string;
 
   private static readonly LLM_DEFAULTS: LLMConfig = {
     enable: false,
@@ -20,10 +20,10 @@ export class WtmConfig {
 
   constructor(options?: WtmOptions) {
     this.debug = options?.debug ?? false;
-    this.translate = options?.translate;
+    this.llmTranslate = options?.llmTranslate;
     this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options?.llm };
 
-    if (this.llm.enable || this.translate) {
+    if (this.llm.enable || this.llmTranslate) {
       this.validateLLMConfig(this.llm);
     }
   }

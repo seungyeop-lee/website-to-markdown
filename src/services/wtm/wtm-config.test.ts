@@ -61,33 +61,33 @@ describe('WtmConfig', () => {
     expect(config.llm.model).toBe('');
   });
 
-  test('translate 미지정 시 undefined', () => {
+  test('llmTranslate 미지정 시 undefined', () => {
     const config = new WtmConfig();
 
-    expect(config.translate).toBeUndefined();
+    expect(config.llmTranslate).toBeUndefined();
   });
 
-  test('translate 지정 시 해당 값 사용', () => {
+  test('llmTranslate 지정 시 해당 값 사용', () => {
     const config = new WtmConfig({
-      translate: 'ko',
+      llmTranslate: 'ko',
       llm: { enable: false, baseUrl: 'http://localhost', apiKey: 'key', model: 'gpt-4' },
     });
 
-    expect(config.translate).toBe('ko');
+    expect(config.llmTranslate).toBe('ko');
   });
 
-  test('translate만 지정하고 LLM config 누락 시 에러', () => {
+  test('llmTranslate만 지정하고 LLM config 누락 시 에러', () => {
     const options: WtmOptions = {
-      translate: 'ko',
+      llmTranslate: 'ko',
       llm: { enable: false, baseUrl: '', apiKey: '', model: '' },
     };
 
     expect(() => new WtmConfig(options)).toThrow('baseUrl, apiKey, model');
   });
 
-  test('--no-llm + translate 지정 시 LLM config 있으면 통과', () => {
+  test('llmTranslate 지정 시 LLM config 있으면 통과', () => {
     const options: WtmOptions = {
-      translate: 'ko',
+      llmTranslate: 'ko',
       llm: { enable: false, baseUrl: 'http://localhost', apiKey: 'key', model: 'gpt-4' },
     };
 

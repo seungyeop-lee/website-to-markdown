@@ -14,8 +14,8 @@ describe('buildWtmOptions', () => {
     process.env = { ...originalEnv };
   });
 
-  test('llm 활성화 시 환경변수에서 LLM 설정을 읽음', () => {
-    const result = buildWtmOptions({ llm: true });
+  test('llmRefine 활성화 시 환경변수에서 LLM 설정을 읽음', () => {
+    const result = buildWtmOptions({ llmRefine: true });
 
     expect(result.llm).toEqual({
       enable: true,
@@ -25,27 +25,27 @@ describe('buildWtmOptions', () => {
     });
   });
 
-  test('llm 비활성화 시 llm 설정을 포함하지 않음', () => {
-    const result = buildWtmOptions({ llm: false });
+  test('llmRefine 미지정 시 llm 설정을 포함하지 않음', () => {
+    const result = buildWtmOptions({});
 
     expect(result.llm).toBeUndefined();
   });
 
-  test('translate 옵션이 있으면 llm 비활성화여도 LLM 설정 포함', () => {
-    const result = buildWtmOptions({ llm: false, translate: 'ko' });
+  test('llmTranslate 옵션이 있으면 llmRefine 미지정이어도 LLM 설정 포함', () => {
+    const result = buildWtmOptions({ llmTranslate: 'ko' });
 
     expect(result.llm).toBeDefined();
-    expect(result.translate).toBe('ko');
+    expect(result.llmTranslate).toBe('ko');
   });
 
   test('debug 옵션 전달', () => {
-    const result = buildWtmOptions({ llm: false, debug: true });
+    const result = buildWtmOptions({ debug: true });
 
     expect(result.debug).toBe(true);
   });
 
   test('debug 미지정 시 false', () => {
-    const result = buildWtmOptions({ llm: false });
+    const result = buildWtmOptions({});
 
     expect(result.debug).toBe(false);
   });

@@ -15,7 +15,7 @@ function buildCase(id: string, status: HarnessCaseReport['status']): HarnessCase
     title: id,
     suite: 'core',
     status,
-    command: 'bun src/cli/index.ts convert --no-llm',
+    command: 'bun src/cli/index.ts convert',
     durationMs: 10,
     exitCode: status === 'FAILED' ? 1 : 0,
     stdoutPath: 'stdout/test.log',

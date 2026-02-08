@@ -49,7 +49,7 @@
 
 ### core-convert-intro
 
-- 명령: `convert --no-llm <fixture>/docs/intro.html -o ...`
+- 명령: `convert <fixture>/docs/intro.html -o ...`
 - 검증:
   - exit code `0`
   - 출력 파일 생성
@@ -57,7 +57,7 @@
 
 ### core-convert-spa
 
-- 명령: `convert --no-llm <fixture>/docs/spa.html -o ...`
+- 명령: `convert <fixture>/docs/spa.html -o ...`
 - 검증:
   - exit code `0`
   - 출력 파일 생성
@@ -66,7 +66,7 @@
 
 ### core-crawl-docs
 
-- 명령: `crawl --no-llm --url <fixture>/docs/intro.html --output-dir ... --link-depth 1 --scope 0 --path-depth 2`
+- 명령: `crawl --url <fixture>/docs/intro.html --output-dir ... --link-depth 1 --scope 0 --path-depth 2`
 - 검증:
   - exit code `0`
   - 생성 파일이 정확히 3개: `docs/intro.md`, `docs/advanced.md`, `docs/spa.md`
@@ -75,7 +75,7 @@
 
 ### core-crawl-urls-query-filenames
 
-- 명령: `crawl --no-llm --urls <input>/query-urls.txt --output-dir ...`
+- 명령: `batch --urls <input>/query-urls.txt --output-dir ...`
 - 입력 URL 예시:
   - `<fixture>/docs/intro.html?lang=ko&page=1`
   - `<fixture>/docs/intro.html?page=1&lang=ko` (같은 쿼리, 순서만 다름)
@@ -88,14 +88,14 @@
 
 ### core-invalid-url
 
-- 명령: `convert --no-llm not-a-url`
+- 명령: `convert not-a-url`
 - 검증:
   - exit code `1`
   - stderr에 `유효하지 않은 URL입니다` 포함
 
 ### llm-translate-smoke
 
-- 명령: `convert --translate ko <fixture>/docs/intro.html -o ...`
+- 명령: `convert --llm-translate ko <fixture>/docs/intro.html -o ...`
 - 검증:
   - exit code `0`
   - 출력 파일 생성

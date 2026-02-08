@@ -16,11 +16,11 @@ export class HarnessCaseRegistry {
     return [
       {
         id: 'core-convert-intro',
-        title: 'convert --no-llm intro fixture',
+        title: 'convert intro fixture',
         suite: 'core',
         args: (ctx) => {
           const outputFile = join(ctx.actualRoot, 'convert', 'intro.md');
-          return ['convert', '--no-llm', `${ctx.fixtureOrigin}/docs/intro.html`, '-o', outputFile];
+          return ['convert', `${ctx.fixtureOrigin}/docs/intro.html`, '-o', outputFile];
         },
         beforeRun: async (ctx) => {
           await mkdir(join(ctx.actualRoot, 'convert'), { recursive: true });
@@ -67,11 +67,11 @@ export class HarnessCaseRegistry {
       },
       {
         id: 'core-convert-spa',
-        title: 'convert --no-llm SPA fixture',
+        title: 'convert SPA fixture',
         suite: 'core',
         args: (ctx) => {
           const outputFile = join(ctx.actualRoot, 'convert', 'spa.md');
-          return ['convert', '--no-llm', `${ctx.fixtureOrigin}/docs/spa.html`, '-o', outputFile];
+          return ['convert', `${ctx.fixtureOrigin}/docs/spa.html`, '-o', outputFile];
         },
         beforeRun: async (ctx) => {
           await mkdir(join(ctx.actualRoot, 'convert'), { recursive: true });
@@ -133,13 +133,12 @@ export class HarnessCaseRegistry {
       },
       {
         id: 'core-crawl-docs',
-        title: 'crawl --no-llm docs fixture',
+        title: 'crawl docs fixture',
         suite: 'core',
         args: (ctx) => {
           const outputDir = join(ctx.actualRoot, 'crawl');
           return [
             'crawl',
-            '--no-llm',
             '--url',
             `${ctx.fixtureOrigin}/docs/intro.html`,
             '--output-dir',
@@ -232,7 +231,7 @@ export class HarnessCaseRegistry {
         args: (ctx) => {
           const urlsFile = join(ctx.actualRoot, 'inputs', 'query-urls.txt');
           const outputDir = join(ctx.actualRoot, 'crawl-query');
-          return ['batch', '--no-llm', '--urls', urlsFile, '--output-dir', outputDir];
+          return ['batch', '--urls', urlsFile, '--output-dir', outputDir];
         },
         beforeRun: async (ctx) => {
           const inputDir = join(ctx.actualRoot, 'inputs');
@@ -309,7 +308,7 @@ export class HarnessCaseRegistry {
         id: 'core-invalid-url',
         title: 'convert invalid URL error handling',
         suite: 'core',
-        args: () => ['convert', '--no-llm', 'not-a-url'],
+        args: () => ['convert', 'not-a-url'],
         verify: async (_ctx, result) => {
           const checks: HarnessCheck[] = [];
 
@@ -340,7 +339,7 @@ export class HarnessCaseRegistry {
         suite: 'llm',
         args: (ctx) => {
           const outputFile = join(ctx.actualRoot, 'llm', 'translate-ko.md');
-          return ['convert', '--translate', 'ko', `${ctx.fixtureOrigin}/docs/intro.html`, '-o', outputFile];
+          return ['convert', '--llm-translate', 'ko', `${ctx.fixtureOrigin}/docs/intro.html`, '-o', outputFile];
         },
         beforeRun: async (ctx) => {
           await mkdir(join(ctx.actualRoot, 'llm'), { recursive: true });

@@ -29,7 +29,7 @@ export interface WtmResult {
 
 export interface WtmOptions {
   llm?: Partial<LLMConfig>;
-  translate?: string;
+  llmTranslate?: string;
   debug?: boolean;
 }
 

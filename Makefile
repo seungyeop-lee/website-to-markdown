@@ -19,7 +19,7 @@ clean:
 	rm -rf node_modules dist
 
 real-test-crawl:
-	bun start crawl --output-dir ./test-docs/spring --link-depth 1 --concurrency 5 --no-llm --url https://docs.spring.io/spring-boot/index.html
+	bun start crawl --output-dir ./test-docs/spring --link-depth 1 --concurrency 5 --url https://docs.spring.io/spring-boot/index.html
 
 real-test-basic:
 	bun start convert --debug https://docs.spring.io/spring-boot/index.html
