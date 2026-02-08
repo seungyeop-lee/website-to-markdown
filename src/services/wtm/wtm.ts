@@ -7,9 +7,6 @@ import { BrowserManager } from '../../infrastructure/browser-manager.ts';
 import { WtmConverter } from './wtm-converter.ts';
 import type { WtmOptions, WtmResult } from '../../types.ts';
 
-export { WtmConverter };
-export type { WtmOptions, WtmResult };
-
 /**
  * URL을 받아 Markdown으로 변환하여 반환한다.
  */
