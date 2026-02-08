@@ -14,14 +14,15 @@ describe('WtmFileWriter', () => {
     },
   };
 
-  const mockWtmFn = mock(() => Promise.resolve(mockResult));
+  const mockConvert = mock(() => Promise.resolve(mockResult));
+  const mockConverter = { convert: mockConvert };
 
   beforeEach(() => {
-    mockWtmFn.mockClear();
+    mockConvert.mockClear();
   });
 
   describe('resolveFilePath', () => {
-    const writer = new WtmFileWriter(mockWtmFn, '/output');
+    const writer = new WtmFileWriter(mockConverter, '/output');
 
     test('루트 URL → index.md', () => {
       expect(writer.resolveFilePath('https://example.com/')).toBe('/output/index.md');
@@ -81,11 +82,11 @@ describe('WtmFileWriter', () => {
       });
 
       try {
-        const writer = new WtmFileWriter(mockWtmFn, '/output');
+        const writer = new WtmFileWriter(mockConverter, '/output');
         const result = await writer.write('https://example.com/docs/api');
 
-        expect(mockWtmFn).toHaveBeenCalledTimes(1);
-        expect(mockWtmFn).toHaveBeenCalledWith('https://example.com/docs/api');
+        expect(mockConvert).toHaveBeenCalledTimes(1);
+        expect(mockConvert).toHaveBeenCalledWith('https://example.com/docs/api');
         expect(written).toHaveLength(1);
         expect(written[0]!.path).toBe('/output/docs/api.md');
         expect(written[0]!.content).toBe('# Test');
@@ -105,7 +106,7 @@ describe('WtmFileWriter', () => {
       });
 
       try {
-        const writer = new WtmFileWriter(mockWtmFn, '/output');
+        const writer = new WtmFileWriter(mockConverter, '/output');
         await writer.write('https://example.com/docs/api?lang=ko&page=2');
 
         expect(written).toHaveLength(1);

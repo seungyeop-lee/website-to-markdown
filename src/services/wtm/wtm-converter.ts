@@ -1,5 +1,5 @@
 /**
- * WtmConverter
+ * DefaultWtmConverter
  * 책임: 외부에서 주입받은 BrowserProvider로 URL → Markdown 변환
  */
 
@@ -10,8 +10,9 @@ import { PageRenderer } from '../base/page-renderer.ts';
 import { ContentExtractor } from '../base/content-extractor.ts';
 import type { WtmConfig } from './wtm-config.ts';
 import type { BrowserProvider, WtmResult } from '../../types.ts';
+import type {WtmConverter} from "../base/types.ts";
 
-export class WtmConverter {
+export class DefaultWtmConverter implements WtmConverter {
   private readonly pageRenderer: PageRenderer;
   private readonly contentExtractor: ContentExtractor;
   private readonly translator: LLMTranslator | { call: (text: string) => Promise<string> };

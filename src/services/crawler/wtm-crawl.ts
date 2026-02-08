@@ -6,7 +6,7 @@
 import {BrowserManager} from '../../infrastructure/browser-manager.ts';
 import type {CrawlOptions} from '../../types.ts';
 import {WtmConfig} from '../wtm/wtm-config.ts';
-import {WtmConverter} from '../wtm/wtm-converter.ts';
+import {DefaultWtmConverter} from '../wtm/wtm-converter.ts';
 import {CrawlConfig} from './crawl-config.ts';
 import {type CrawlResult, WtmCrawler} from './wtm-crawler.ts';
 
@@ -18,8 +18,8 @@ export type { CrawlResult };
 export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
-    const converter = new WtmConverter(browserManager, new WtmConfig(options));
-    const crawler = new WtmCrawler((url) => converter.convert(url), new CrawlConfig(options));
+    const converter = new DefaultWtmConverter(browserManager, new WtmConfig(options));
+    const crawler = new WtmCrawler(converter, new CrawlConfig(options));
     return await crawler.crawl(startUrl);
   } finally {
     await browserManager.close();
@@ -33,9 +33,9 @@ export async function wtmCrawlUrls(urls: string[], options: CrawlOptions): Promi
   const browserManager = new BrowserManager();
   try {
     const wtmConfig = new WtmConfig(options);
-    const converter = new WtmConverter(browserManager, wtmConfig);
+    const converter = new DefaultWtmConverter(browserManager, wtmConfig);
     const crawlConfig = new CrawlConfig(options);
-    const crawler = new WtmCrawler((url) => converter.convert(url), crawlConfig);
+    const crawler = new WtmCrawler(converter, crawlConfig);
     return await crawler.crawlUrls(urls);
   } finally {
     await browserManager.close();

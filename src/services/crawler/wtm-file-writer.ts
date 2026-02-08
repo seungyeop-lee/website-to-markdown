@@ -5,19 +5,18 @@
 
 import { logger } from '../../infrastructure/logger.ts';
 import type { WtmResult } from '../../types.ts';
-
-export type WtmFn = (url: string) => Promise<WtmResult>;
+import type {WtmConverter} from "../base/types.ts";
 
 export class WtmFileWriter {
   private static readonly QUERY_SLUG_MAX_LENGTH = 80;
 
   constructor(
-    private wtmFn: WtmFn,
+    private converter: WtmConverter,
     private outputDir: string,
   ) {}
 
   async write(url: string): Promise<WtmResult> {
-    const result = await this.wtmFn(url);
+    const result = await this.converter.convert(url);
     const filePath = this.resolveFilePath(url);
 
     await Bun.write(filePath, result.markdown);

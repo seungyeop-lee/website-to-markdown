@@ -7,7 +7,8 @@ import { logger } from '../../infrastructure/logger.ts';
 import { normalizeUrl } from '../../utils/url-normalizer.ts';
 import type { CrawlConfig } from './crawl-config.ts';
 import { UrlScopeFilter } from './url-scope-filter.ts';
-import { WtmFileWriter, type WtmFn } from './wtm-file-writer.ts';
+import { WtmFileWriter } from './wtm-file-writer.ts';
+import type {WtmConverter} from "../base/types.ts";
 
 export interface CrawlResult {
   succeeded: string[];
@@ -17,15 +18,15 @@ export interface CrawlResult {
 
 export class WtmCrawler {
   private readonly config: CrawlConfig;
-  private readonly convertFn: WtmFn;
+  private readonly converter: WtmConverter;
 
-  constructor(convertFn: WtmFn, config: CrawlConfig) {
-    this.convertFn = convertFn;
+  constructor(converter: WtmConverter, config: CrawlConfig) {
+    this.converter = converter;
     this.config = config;
   }
 
   async crawl(startUrl: string): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.convertFn, this.config.outputDir);
+    const writer = new WtmFileWriter(this.converter, this.config.outputDir);
     const scopeFilter = new UrlScopeFilter(startUrl, this.config.scopeLevels, this.config.maxPathDepth);
 
     const visited = new Set<string>();
@@ -136,7 +137,7 @@ export class WtmCrawler {
   }
 
   async crawlUrls(urls: string[]): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.convertFn, this.config.outputDir);
+    const writer = new WtmFileWriter(this.converter, this.config.outputDir);
 
     const succeeded: string[] = [];
     const failed: { url: string; error: string }[] = [];
