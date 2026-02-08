@@ -1,7 +1,8 @@
 import type { Command } from 'commander';
 import { wtm } from '../services/wtm/wtm.ts';
 import { logger } from '../infrastructure/logger.ts';
-import { buildWtmOptions, ENV_HELP, type CommonOptions } from './options.ts';
+import { buildWtmOptions, ENV_HELP } from './shared-options.ts';
+import type { ConvertCliOptions } from './convert-options.ts';
 
 export function registerConvertCommand(program: Command): void {
   program
@@ -14,7 +15,7 @@ export function registerConvertCommand(program: Command): void {
     .option('-o, --output <file>', '[선택] 결과를 파일로 저장')
     .showHelpAfterError()
     .addHelpText('after', ENV_HELP)
-    .action(async (url: string, options: CommonOptions & { output?: string }) => {
+    .action(async (url: string, options: ConvertCliOptions) => {
       logger.init(options.debug ?? false);
       try {
         logger.info(`변환 중: ${url}`);

@@ -16,7 +16,7 @@ export type { CrawlResult };
 export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
-    const converter = new WtmConverter(browserManager, options.wtmOptions);
+    const converter = new WtmConverter(browserManager, options);
     const crawler = new WtmCrawler((url) => converter.convert(url), options);
     return await crawler.crawl(startUrl);
   } finally {
@@ -30,7 +30,7 @@ export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise
 export async function wtmCrawlUrls(urls: string[], options: CrawlOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
-    const converter = new WtmConverter(browserManager, options.wtmOptions);
+    const converter = new WtmConverter(browserManager, options);
     const crawler = new WtmCrawler((url) => converter.convert(url), options);
     return await crawler.crawlUrls(urls);
   } finally {

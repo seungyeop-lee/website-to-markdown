@@ -1,7 +1,9 @@
 import type { Command } from 'commander';
 import { wtmCrawl, wtmCrawlUrls } from '../services/crawler/wtm-crawl.ts';
 import { logger } from '../infrastructure/logger.ts';
-import { buildWtmOptions, ENV_HELP, type CommonOptions } from './options.ts';
+import { ENV_HELP } from './shared-options.ts';
+import { buildCrawlOptions } from './crawl-options.ts';
+import type { CrawlCliOptions } from './crawl-options.ts';
 
 export function registerCrawlCommand(program: Command): void {
   program
@@ -19,25 +21,10 @@ export function registerCrawlCommand(program: Command): void {
     .option('--translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
     .showHelpAfterError()
     .addHelpText('after', ENV_HELP)
-    .action(async (options: CommonOptions & {
-      outputDir: string;
-      url?: string;
-      linkDepth: string;
-      pathDepth: string;
-      scope: string;
-      concurrency: string;
-      urls?: string;
-    }) => {
+    .action(async (options: CrawlCliOptions) => {
       logger.init(options.debug ?? false);
 
-      const crawlOptions = {
-        outputDir: options.outputDir,
-        wtmOptions: buildWtmOptions(options),
-        maxLinkDepth: parseInt(options.linkDepth, 10),
-        maxPathDepth: parseInt(options.pathDepth, 10),
-        scopeLevels: parseInt(options.scope, 10),
-        concurrency: parseInt(options.concurrency, 10),
-      };
+      const crawlOptions = buildCrawlOptions(options);
 
       try {
         if (options.urls) {

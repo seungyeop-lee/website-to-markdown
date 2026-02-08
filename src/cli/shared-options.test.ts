@@ -1,5 +1,5 @@
 import { test, expect, describe, beforeEach, afterEach } from 'bun:test';
-import { buildWtmOptions } from './options.ts';
+import { buildWtmOptions } from './shared-options.ts';
 
 describe('buildWtmOptions', () => {
   const originalEnv = { ...process.env };
