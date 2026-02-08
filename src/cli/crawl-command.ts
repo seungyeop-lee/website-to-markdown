@@ -1,7 +1,5 @@
 import type { Command } from 'commander';
-import { BrowserManager } from '../infrastructure/browser-manager.ts';
-import { WtmConverter } from '../services/wtm/wtm.ts';
-import { WtmCrawler } from '../services/crawler/wtm-crawler.ts';
+import { wtmCrawl, wtmCrawlUrls } from '../services/crawler/wtm-crawl.ts';
 import { logger } from '../infrastructure/logger.ts';
 import { buildWtmOptions, ENV_HELP, type CommonOptions } from './options.ts';
 
@@ -32,21 +30,16 @@ export function registerCrawlCommand(program: Command): void {
     }) => {
       logger.init(options.debug ?? false);
 
-      const browserManager = new BrowserManager();
-      try {
-        const wtmOptions = buildWtmOptions(options);
-        const converter = new WtmConverter(browserManager, wtmOptions);
-        const crawler = new WtmCrawler(
-          (url) => converter.convert(url),
-          {
-            outputDir: options.outputDir,
-            maxLinkDepth: parseInt(options.linkDepth, 10),
-            maxPathDepth: parseInt(options.pathDepth, 10),
-            scopeLevels: parseInt(options.scope, 10),
-            concurrency: parseInt(options.concurrency, 10),
-          },
-        );
+      const crawlOptions = {
+        outputDir: options.outputDir,
+        wtmOptions: buildWtmOptions(options),
+        maxLinkDepth: parseInt(options.linkDepth, 10),
+        maxPathDepth: parseInt(options.pathDepth, 10),
+        scopeLevels: parseInt(options.scope, 10),
+        concurrency: parseInt(options.concurrency, 10),
+      };
 
+      try {
         if (options.urls) {
           const fileContent = await Bun.file(options.urls).text();
           const urls = fileContent
@@ -60,11 +53,11 @@ export function registerCrawlCommand(program: Command): void {
           }
 
           logger.info(`URL 리스트 모드: ${urls.length}개 URL`);
-          const result = await crawler.crawlUrls(urls);
+          const result = await wtmCrawlUrls(urls, crawlOptions);
           printCrawlResult(result);
         } else if (options.url) {
           logger.info(`크롤링 시작: ${options.url}`);
-          const result = await crawler.crawl(options.url);
+          const result = await wtmCrawl(options.url, crawlOptions);
           printCrawlResult(result);
         } else {
           console.error('[ERROR] --url 또는 --urls 옵션을 지정해야 합니다.');
@@ -74,8 +67,6 @@ export function registerCrawlCommand(program: Command): void {
         const message = error instanceof Error ? error.message : String(error);
         console.error(`[ERROR] ${message}`);
         process.exit(1);
-      } finally {
-        await browserManager.close();
       }
     });
 }

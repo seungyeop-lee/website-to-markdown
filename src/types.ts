@@ -35,6 +35,7 @@ export interface WtmOptions {
 
 export interface CrawlOptions {
   outputDir: string;
+  wtmOptions?: WtmOptions;
   maxLinkDepth?: number;
   maxPathDepth?: number;
   scopeLevels?: number;
