@@ -334,6 +334,72 @@ export class HarnessCaseRegistry {
         },
       },
       {
+        id: 'llm-refine-smoke',
+        title: 'refine smoke with OPENAI env',
+        suite: 'llm',
+        args: (ctx) => {
+          const outputFile = join(ctx.actualRoot, 'llm', 'refine-intro.md');
+          return [
+            'convert',
+            '--llm-refine',
+            `${ctx.fixtureOrigin}/docs/intro.html`,
+            '-o',
+            outputFile,
+          ];
+        },
+        beforeRun: async (ctx) => {
+          await mkdir(join(ctx.actualRoot, 'llm'), { recursive: true });
+        },
+        skipReason: () => {
+          const required = ['OPENAI_API_BASE_URL', 'OPENAI_API_KEY', 'OPENAI_API_MODEL'];
+          const missing = required.filter((key) => !process.env[key]);
+          if (missing.length === 0) {
+            return undefined;
+          }
+          return `환경변수 누락으로 스킵: ${missing.join(', ')}`;
+        },
+        verify: async (ctx, result, tools) => {
+          const checks: HarnessCheck[] = [];
+          const actualPath = join(ctx.actualRoot, 'llm', 'refine-intro.md');
+
+          checks.push(
+            createCheck(
+              'exit code',
+              result.exitCode === 0,
+              '종료코드 0',
+              `종료코드가 0이 아닙니다: ${String(result.exitCode)}`,
+            ),
+          );
+
+          const actualExists = await tools.fileExists(actualPath);
+          checks.push(
+            createCheck(
+              'output file 생성',
+              actualExists,
+              `파일 생성됨: ${tools.toArtifactRelative(actualPath)}`,
+              `파일 생성 실패: ${tools.toArtifactRelative(actualPath)}`,
+            ),
+          );
+
+          let nonEmpty = false;
+          if (actualExists) {
+            const text = await tools.readText(actualPath);
+            nonEmpty = text.trim().length > 0;
+          }
+
+          checks.push(
+            createCheck(
+              'refine 결과 비어있지 않음',
+              nonEmpty,
+              'refine 결과가 비어있지 않습니다.',
+              'refine 결과가 비어있습니다.',
+            ),
+          );
+
+          return { checks, comparisons: [] };
+        },
+      },
+      {
         id: 'llm-translate-smoke',
         title: 'translate smoke with OPENAI env',
         suite: 'llm',

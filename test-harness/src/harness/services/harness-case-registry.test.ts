@@ -23,12 +23,15 @@ describe('HarnessCaseRegistry', () => {
     ]);
   });
 
-  it('llm suite에 1개 케이스를 제공한다', () => {
+  it('llm suite에 2개 케이스를 제공한다', () => {
     const registry = new HarnessCaseRegistry();
 
     const llmCases = registry.getCasesBySuite('llm');
 
-    expect(llmCases).toHaveLength(1);
-    expect(llmCases[0]?.id).toBe('llm-translate-smoke');
+    expect(llmCases).toHaveLength(2);
+    expect(llmCases.map((entry) => entry.id)).toEqual([
+      'llm-refine-smoke',
+      'llm-translate-smoke',
+    ]);
   });
 });
