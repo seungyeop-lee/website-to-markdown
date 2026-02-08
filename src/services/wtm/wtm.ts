@@ -4,8 +4,9 @@
  */
 
 import { BrowserManager } from '../../infrastructure/browser-manager.ts';
-import { WtmConverter } from './wtm-converter.ts';
 import type { WtmOptions, WtmResult } from '../../types.ts';
+import { WtmConfig } from './wtm-config.ts';
+import { WtmConverter } from './wtm-converter.ts';
 
 /**
  * URL을 받아 Markdown으로 변환하여 반환한다.
@@ -13,7 +14,8 @@ import type { WtmOptions, WtmResult } from '../../types.ts';
 export async function wtm(url: string, options?: WtmOptions): Promise<WtmResult> {
   const browserManager = new BrowserManager();
   try {
-    const converter = new WtmConverter(browserManager, options);
+    const wtmConfig = new WtmConfig(options);
+    const converter = new WtmConverter(browserManager, wtmConfig);
     return await converter.convert(url);
   } finally {
     await browserManager.close();

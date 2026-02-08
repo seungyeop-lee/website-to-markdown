@@ -1,4 +1,5 @@
 import { test, expect, describe, mock, beforeEach } from 'bun:test';
+import { CrawlConfig } from './crawl-config.ts';
 import { WtmCrawler } from './wtm-crawler.ts';
 import type { WtmResult } from '../../types.ts';
 
@@ -35,10 +36,10 @@ describe('WtmCrawler', () => {
         Promise.resolve(makeResult('https://example.com/docs/page')),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 3,
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/page');
 
@@ -61,11 +62,11 @@ describe('WtmCrawler', () => {
         Promise.resolve(pages[url]!),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 3,
         scopeLevels: 0,
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/a');
 
@@ -82,10 +83,10 @@ describe('WtmCrawler', () => {
         ),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 1,
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/a');
 
@@ -108,10 +109,10 @@ describe('WtmCrawler', () => {
         Promise.resolve(pages[url]!),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 1, // a(0) → b(1)까지만
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/a');
 
@@ -131,11 +132,11 @@ describe('WtmCrawler', () => {
         ),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 1,
         scopeLevels: 0,
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/start');
 
@@ -159,11 +160,11 @@ describe('WtmCrawler', () => {
         );
       });
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 1,
         concurrency: 10,
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/start');
 
@@ -183,12 +184,12 @@ describe('WtmCrawler', () => {
         ),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
         maxLinkDepth: 2,
         scopeLevels: 0,
         maxPathDepth: 1,
-      });
+      }));
 
       const result = await crawler.crawl('https://example.com/docs/start');
 
@@ -203,9 +204,9 @@ describe('WtmCrawler', () => {
         Promise.resolve(makeResult(url)),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
-      });
+      }));
 
       const urls = [
         'https://example.com/a',
@@ -226,9 +227,9 @@ describe('WtmCrawler', () => {
         Promise.resolve(makeResult(url, ['https://example.com/should-not-follow'])),
       );
 
-      const crawler = new WtmCrawler(convertFn, {
+      const crawler = new WtmCrawler(convertFn, new CrawlConfig({
         outputDir: '/out',
-      });
+      }));
 
       const result = await crawler.crawlUrls(['https://example.com/a']);
 

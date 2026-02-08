@@ -4,8 +4,8 @@
  */
 
 import { logger } from '../../infrastructure/logger.ts';
-import type { CrawlOptions } from '../../types.ts';
 import { normalizeUrl } from '../../utils/url-normalizer.ts';
+import type { CrawlConfig } from './crawl-config.ts';
 import { UrlScopeFilter } from './url-scope-filter.ts';
 import { WtmFileWriter, type WtmFn } from './wtm-file-writer.ts';
 
@@ -16,25 +16,17 @@ export interface CrawlResult {
 }
 
 export class WtmCrawler {
-  private readonly maxLinkDepth: number;
-  private readonly maxPathDepth?: number;
-  private readonly scopeLevels: number;
-  private readonly concurrency: number;
-  private readonly outputDir: string;
+  private readonly config: CrawlConfig;
   private readonly convertFn: WtmFn;
 
-  constructor(convertFn: WtmFn, options: CrawlOptions) {
+  constructor(convertFn: WtmFn, config: CrawlConfig) {
     this.convertFn = convertFn;
-    this.outputDir = options.outputDir;
-    this.maxLinkDepth = options.maxLinkDepth ?? 3;
-    this.maxPathDepth = options.maxPathDepth ?? 1;
-    this.scopeLevels = options.scopeLevels ?? 0;
-    this.concurrency = options.concurrency ?? 3;
+    this.config = config;
   }
 
   async crawl(startUrl: string): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.convertFn, this.outputDir);
-    const scopeFilter = new UrlScopeFilter(startUrl, this.scopeLevels, this.maxPathDepth);
+    const writer = new WtmFileWriter(this.convertFn, this.config.outputDir);
+    const scopeFilter = new UrlScopeFilter(startUrl, this.config.scopeLevels, this.config.maxPathDepth);
 
     const visited = new Set<string>();
     const succeeded: string[] = [];
@@ -45,17 +37,17 @@ export class WtmCrawler {
     let queue: { url: string; depth: number }[] = [{ url: startUrl, depth: 0 }];
     visited.add(normalizeUrl(startUrl));
 
-    logger.debug(`크롤링 설정: maxLinkDepth=${this.maxLinkDepth}, maxPathDepth=${this.maxPathDepth}, concurrency=${this.concurrency}, scopeLevels=${this.scopeLevels}`);
+    logger.debug(`크롤링 설정: maxLinkDepth=${this.config.maxLinkDepth}, maxPathDepth=${this.config.maxPathDepth}, concurrency=${this.config.concurrency}, scopeLevels=${this.config.scopeLevels}`);
 
     while (queue.length > 0) {
-      const batch = queue.splice(0, this.concurrency);
+      const batch = queue.splice(0, this.config.concurrency);
       const nextQueue: { url: string; depth: number }[] = [];
 
       logger.debug(`배치 처리 시작: ${batch.length}개, 남은 큐: ${queue.length}개`);
 
       const results = await Promise.allSettled(
         batch.map(async ({ url, depth }) => {
-          logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.maxLinkDepth}): ${url}`);
+          logger.info(`크롤링 #${++processedCount} (depth ${depth}/${this.config.maxLinkDepth}): ${url}`);
           const result = await writer.write(url);
           return { url, depth, links: result.metadata.links };
         }),
@@ -93,7 +85,7 @@ export class WtmCrawler {
 
       if (settledResult.status === 'fulfilled') {
         ctx.succeeded.push(url);
-        if (depth < this.maxLinkDepth) {
+        if (depth < this.config.maxLinkDepth) {
           this.enqueueDiscoveredLinks(settledResult.value.links, depth, ctx);
         } else {
           logger.debug(`최대 link-depth 도달, 링크 수집 스킵: ${url}`);
@@ -144,15 +136,15 @@ export class WtmCrawler {
   }
 
   async crawlUrls(urls: string[]): Promise<CrawlResult> {
-    const writer = new WtmFileWriter(this.convertFn, this.outputDir);
+    const writer = new WtmFileWriter(this.convertFn, this.config.outputDir);
 
     const succeeded: string[] = [];
     const failed: { url: string; error: string }[] = [];
 
     // concurrency만큼 배치 처리
     let processedCount = 0;
-    for (let i = 0; i < urls.length; i += this.concurrency) {
-      const batch = urls.slice(i, i + this.concurrency);
+    for (let i = 0; i < urls.length; i += this.config.concurrency) {
+      const batch = urls.slice(i, i + this.config.concurrency);
 
       const results = await Promise.allSettled(
         batch.map(async (url) => {

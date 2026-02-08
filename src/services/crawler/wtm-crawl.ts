@@ -3,10 +3,12 @@
  * 책임: DI 조립 → 크롤링 실행 → 리소스 정리
  */
 
-import { BrowserManager } from '../../infrastructure/browser-manager.ts';
-import { WtmConverter } from '../wtm/wtm-converter.ts';
-import { WtmCrawler, type CrawlResult } from './wtm-crawler.ts';
-import type { CrawlOptions } from '../../types.ts';
+import {BrowserManager} from '../../infrastructure/browser-manager.ts';
+import type {CrawlOptions} from '../../types.ts';
+import {WtmConfig} from '../wtm/wtm-config.ts';
+import {WtmConverter} from '../wtm/wtm-converter.ts';
+import {CrawlConfig} from './crawl-config.ts';
+import {type CrawlResult, WtmCrawler} from './wtm-crawler.ts';
 
 export type { CrawlResult };
 
@@ -16,8 +18,8 @@ export type { CrawlResult };
 export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
-    const converter = new WtmConverter(browserManager, options);
-    const crawler = new WtmCrawler((url) => converter.convert(url), options);
+    const converter = new WtmConverter(browserManager, new WtmConfig(options));
+    const crawler = new WtmCrawler((url) => converter.convert(url), new CrawlConfig(options));
     return await crawler.crawl(startUrl);
   } finally {
     await browserManager.close();
@@ -30,8 +32,10 @@ export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise
 export async function wtmCrawlUrls(urls: string[], options: CrawlOptions): Promise<CrawlResult> {
   const browserManager = new BrowserManager();
   try {
-    const converter = new WtmConverter(browserManager, options);
-    const crawler = new WtmCrawler((url) => converter.convert(url), options);
+    const wtmConfig = new WtmConfig(options);
+    const converter = new WtmConverter(browserManager, wtmConfig);
+    const crawlConfig = new CrawlConfig(options);
+    const crawler = new WtmCrawler((url) => converter.convert(url), crawlConfig);
     return await crawler.crawlUrls(urls);
   } finally {
     await browserManager.close();

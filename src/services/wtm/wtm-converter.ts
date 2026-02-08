@@ -8,8 +8,8 @@ import { LLMTranslator, NullTranslator } from '../../infrastructure/llm-translat
 import { logger } from '../../infrastructure/logger.ts';
 import { PageRenderer } from '../base/page-renderer.ts';
 import { ContentExtractor } from '../base/content-extractor.ts';
-import { WtmConfig } from './wtm-config.ts';
-import type { BrowserProvider, WtmOptions, WtmResult } from '../../types.ts';
+import type { WtmConfig } from './wtm-config.ts';
+import type { BrowserProvider, WtmResult } from '../../types.ts';
 
 export class WtmConverter {
   private readonly pageRenderer: PageRenderer;
@@ -17,8 +17,8 @@ export class WtmConverter {
   private readonly translator: LLMTranslator | { call: (text: string) => Promise<string> };
   private readonly config: WtmConfig;
 
-  constructor(browserManager: BrowserProvider, options?: WtmOptions) {
-    this.config = new WtmConfig(options);
+  constructor(browserManager: BrowserProvider, config: WtmConfig) {
+    this.config = config;
     logger.init(this.config.debug);
 
     const refiner = this.config.llm.enable ? new LLMClient(this.config.llm) : new NullRefiner();
