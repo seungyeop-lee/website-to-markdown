@@ -9,12 +9,12 @@ export function registerBatchCommand(program: Command): void {
   program
     .command('batch')
     .description('URL 목록 파일을 읽어 일괄 Markdown 변환 (링크 추적 없음)')
-    .requiredOption('--output-dir <dir>', '[필수] 결과 파일 저장 디렉토리')
-    .requiredOption('--urls <file>', '[필수] URL 목록 파일 경로 (한 줄에 하나씩)')
-    .option('--concurrency <n>', '[선택] 동시 처리 수', '3')
-    .option('--debug', '[선택] 파이프라인 각 스텝의 시작/종료 및 결과물 출력')
-    .option('--llm-refine', '[선택] LLM 후처리로 마크다운 정제')
-    .option('--llm-translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
+    .requiredOption('-D, --output-dir <dir>', '[필수] 결과 파일 저장 디렉토리')
+    .requiredOption('-f, --urls <file>', '[필수] URL 목록 파일 경로 (한 줄에 하나씩)')
+    .option('-c, --concurrency <n>', '[선택] 동시 처리 수', '3')
+    .option('-d, --debug', '[선택] 파이프라인 각 스텝의 시작/종료 및 결과물 출력')
+    .option('-r, --llm-refine', '[선택] LLM 후처리로 마크다운 정제')
+    .option('-t, --llm-translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
     .showHelpAfterError()
     .addHelpText('after', ENV_HELP)
     .action(async (options: BatchCliOptions) => {

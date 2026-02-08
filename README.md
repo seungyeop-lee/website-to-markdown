@@ -109,14 +109,14 @@ wtm crawl --url https://example.com/docs/intro --output-dir ./docs --llm-refine
 
 **옵션:**
 
-| 옵션 | 설명 | 기본값  |
-|------|------|:----:|
-| `--url <url>` | 크롤링 시작 URL | (필수) |
-| `--output-dir <dir>` | 결과 파일 저장 디렉토리 | (필수) |
-| `--link-depth <n>` | 최대 링크 홉 깊이 |  3   |
-| `--path-depth <n>` | scope 기준 하위 경로 최대 깊이 |  1   |
-| `--scope <n>` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) |  0   |
-| `--concurrency <n>` | 동시 처리 수 |  3   |
+| 옵션 | 단축 | 설명 | 기본값  |
+|------|------|------|:----:|
+| `--url <url>` | `-u` | 크롤링 시작 URL | (필수) |
+| `--output-dir <dir>` | `-D` | 결과 파일 저장 디렉토리 | (필수) |
+| `--link-depth <n>` | `-l` | 최대 링크 홉 깊이 |  3   |
+| `--path-depth <n>` | `-p` | scope 기준 하위 경로 최대 깊이 |  1   |
+| `--scope <n>` | `-s` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) |  0   |
+| `--concurrency <n>` | `-c` | 동시 처리 수 |  3   |
 
 **스코프 레벨 설명:**
 
@@ -164,11 +164,11 @@ wtm batch --urls urls.txt --output-dir ./docs --concurrency 5
 
 **옵션:**
 
-| 옵션 | 설명 | 기본값  |
-|------|------|:----:|
-| `--urls <file>` | URL 목록 파일 경로 (한 줄에 하나씩) | (필수) |
-| `--output-dir <dir>` | 결과 파일 저장 디렉토리 | (필수) |
-| `--concurrency <n>` | 동시 처리 수 |  3   |
+| 옵션 | 단축 | 설명 | 기본값  |
+|------|------|------|:----:|
+| `--urls <file>` | `-f` | URL 목록 파일 경로 (한 줄에 하나씩) | (필수) |
+| `--output-dir <dir>` | `-D` | 결과 파일 저장 디렉토리 | (필수) |
+| `--concurrency <n>` | `-c` | 동시 처리 수 |  3   |
 
 ### 파일명 규칙 (crawl / batch 공통)
 
