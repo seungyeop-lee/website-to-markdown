@@ -22,4 +22,4 @@ real-test-crawl:
 	bun start crawl --output-dir ./test-docs/spring --link-depth 1 --concurrency 5 --url https://docs.spring.io/spring-boot/index.html
 
 real-test-basic:
-	bun start convert --debug https://docs.spring.io/spring-boot/index.html
+	bun start convert -r -t ko https://docs.spring.io/spring-boot/index.html

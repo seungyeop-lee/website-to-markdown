@@ -11,7 +11,7 @@
 - LLM 후처리를 통한 마크다운 정제 (`--llm-refine`, 선택 사항)
 - LLM 기반 다국어 번역 (`--llm-translate <lang>`, 선택 사항)
 - YAML frontmatter 자동 생성 (url, createdAt)
-- `--debug` 모드로 파이프라인 각 스텝 로깅
+- `--log-level` 옵션으로 로그 레벨 제어 (`debug`, `info`, `error`)
 - 다중 페이지 크롤링 (`wtm crawl`) — 링크 추적, 스코프 필터링, 병렬 처리
 - URL 목록 배치 변환 (`wtm batch`) — 지정된 URL만 일괄 변환
 
@@ -61,7 +61,7 @@ bunx @seungyeop-lee/website-to-markdown convert --llm-translate ko https://examp
 bunx @seungyeop-lee/website-to-markdown convert --llm-refine --llm-translate ko https://example.com/article
 
 # 디버그 모드 (파이프라인 각 스텝 로깅)
-bunx @seungyeop-lee/website-to-markdown convert --debug https://example.com/article
+bunx @seungyeop-lee/website-to-markdown convert --log-level debug https://example.com/article
 
 # 파일로 저장 (stdout 리다이렉션)
 bunx @seungyeop-lee/website-to-markdown convert https://example.com/article > output.md
@@ -81,7 +81,7 @@ wtm convert https://example.com/article
 wtm convert --llm-refine https://example.com/article
 wtm convert --llm-translate ko https://example.com/article
 wtm convert --llm-refine --llm-translate ko https://example.com/article
-wtm convert --debug https://example.com/article
+wtm convert --log-level debug https://example.com/article
 wtm convert https://example.com/article > output.md
 wtm convert -o output.md https://example.com/article
 ```
@@ -223,7 +223,7 @@ const result = await wtm('https://example.com/article', {
 
 // 디버그 모드
 const result = await wtm('https://example.com/article', {
-  debug: true,
+  logLevel: 'debug',
   llmRefine: true,
   llmConfig: {
     baseUrl: 'https://api.openai.com/v1',

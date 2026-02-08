@@ -1,7 +1,7 @@
-import type { WtmOptions } from '../types.ts';
+import type { LogLevel, WtmOptions } from '../types.ts';
 
 export interface CommonOptions {
-  debug?: boolean;
+  logLevel?: string;
   llmRefine?: boolean;
   llmTranslate?: string;
 }
@@ -16,7 +16,7 @@ export function buildWtmOptions(options: CommonOptions): WtmOptions {
     } : undefined,
     llmRefine: options.llmRefine ?? false,
     llmTranslate: options.llmTranslate,
-    debug: options.debug ?? false,
+    logLevel: (options.logLevel as LogLevel) ?? 'info',
   };
 }
 

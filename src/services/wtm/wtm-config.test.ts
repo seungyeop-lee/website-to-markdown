@@ -6,14 +6,14 @@ describe('WtmConfig', () => {
   test('옵션 미전달 시 기본값 적용', () => {
     const config = new WtmConfig();
 
-    expect(config.debug).toBe(false);
+    expect(config.logLevel).toBe('info');
     expect(config.llmRefine).toBe(false);
   });
 
-  test('debug 지정 시 해당 값 사용', () => {
-    const config = new WtmConfig({ debug: true });
+  test('logLevel 지정 시 해당 값 사용', () => {
+    const config = new WtmConfig({ logLevel: 'debug' });
 
-    expect(config.debug).toBe(true);
+    expect(config.logLevel).toBe('debug');
   });
 
   test('LLM llmRefine 시 baseUrl 누락하면 Error throw', () => {
@@ -102,12 +102,12 @@ describe('WtmConfig', () => {
     const options: WtmOptions = {
       llmRefine: true,
       llmConfig: { baseUrl: 'http://localhost', apiKey: 'key', model: 'gpt-4' },
-      debug: true,
+      logLevel: 'debug',
     };
 
     const config = new WtmConfig(options);
 
-    expect(config.debug).toBe(true);
+    expect(config.logLevel).toBe('debug');
     expect(config.llmRefine).toBe(true);
     expect(config.llm.baseUrl).toBe('http://localhost');
     expect(config.llm.apiKey).toBe('key');

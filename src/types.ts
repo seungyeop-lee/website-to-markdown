@@ -32,11 +32,13 @@ export interface WtmResult {
   metadata: PageMetadata;
 }
 
+export type LogLevel = 'debug' | 'info' | 'error';
+
 export interface WtmOptions {
   llmConfig?: Partial<LLMConfig>;
   llmRefine?: boolean;
   llmTranslate?: string;
-  debug?: boolean;
+  logLevel?: LogLevel;
 }
 
 export interface BatchConvertOptions extends WtmOptions {

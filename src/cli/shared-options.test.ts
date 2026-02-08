@@ -38,15 +38,15 @@ describe('buildWtmOptions', () => {
     expect(result.llmTranslate).toBe('ko');
   });
 
-  test('debug 옵션 전달', () => {
-    const result = buildWtmOptions({ debug: true });
+  test('logLevel 옵션 전달', () => {
+    const result = buildWtmOptions({ logLevel: 'debug' });
 
-    expect(result.debug).toBe(true);
+    expect(result.logLevel).toBe('debug');
   });
 
-  test('debug 미지정 시 false', () => {
+  test('logLevel 미지정 시 info', () => {
     const result = buildWtmOptions({});
 
-    expect(result.debug).toBe(false);
+    expect(result.logLevel).toBe('info');
   });
 });

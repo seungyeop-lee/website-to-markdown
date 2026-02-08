@@ -4,6 +4,7 @@ import { logger } from '../infrastructure/logger.ts';
 import { ENV_HELP } from './shared-options.ts';
 import { buildCrawlOptions } from './crawl-options.ts';
 import type { CrawlCliOptions } from './crawl-options.ts';
+import type { LogLevel } from '../types.ts';
 
 export function registerCrawlCommand(program: Command): void {
   program
@@ -15,13 +16,13 @@ export function registerCrawlCommand(program: Command): void {
     .option('-p, --path-depth <n>', '[선택] scope 기준 하위 경로 최대 깊이', '1')
     .option('-s, --scope <n>', '[선택] 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...)', '0')
     .option('-c, --concurrency <n>', '[선택] 동시 처리 수', '3')
-    .option('-d, --debug', '[선택] 파이프라인 각 스텝의 시작/종료 및 결과물 출력')
+    .option('-L, --log-level <level>', '[선택] 로그 레벨 (debug, info, error)', 'info')
     .option('-r, --llm-refine', '[선택] LLM 후처리로 마크다운 정제')
     .option('-t, --llm-translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
     .showHelpAfterError()
     .addHelpText('after', ENV_HELP)
     .action(async (options: CrawlCliOptions) => {
-      logger.init(options.debug ?? false);
+      logger.init((options.logLevel as LogLevel) ?? 'info');
 
       const crawlOptions = buildCrawlOptions(options);
 
@@ -31,7 +32,7 @@ export function registerCrawlCommand(program: Command): void {
         printCrawlResult(result);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error(`[ERROR] ${message}`);
+        logger.error(message);
         process.exit(1);
       }
     });

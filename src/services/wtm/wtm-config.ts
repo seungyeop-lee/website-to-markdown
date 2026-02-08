@@ -3,10 +3,10 @@
  * 책임: WtmOptions의 validation + 기본값 적용
  */
 
-import type { LLMConfig, WtmOptions } from '../../types.ts';
+import type { LLMConfig, LogLevel, WtmOptions } from '../../types.ts';
 
 export class WtmConfig {
-  readonly debug: boolean;
+  readonly logLevel: LogLevel;
   readonly llm: LLMConfig;
   readonly llmRefine: boolean;
   readonly llmTranslate?: string;
@@ -18,7 +18,7 @@ export class WtmConfig {
   };
 
   constructor(options?: WtmOptions) {
-    this.debug = options?.debug ?? false;
+    this.logLevel = options?.logLevel ?? 'info';
     this.llmRefine = options?.llmRefine ?? false;
     this.llmTranslate = options?.llmTranslate;
     this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options?.llmConfig };
