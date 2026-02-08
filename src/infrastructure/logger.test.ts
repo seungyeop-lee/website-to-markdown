@@ -2,6 +2,12 @@ import { test, expect, describe, beforeEach, afterEach, spyOn } from 'bun:test';
 import { logger } from './logger.ts';
 import type { LogLevel } from '../types.ts';
 
+function logged(level: string, msg: string) {
+  return expect.stringMatching(
+    new RegExp(`^\\d{4}-\\d{2}-\\d{2}T[\\d:.]+Z \\[${level}\\] ${msg}$`),
+  );
+}
+
 describe('Logger', () => {
   let errorSpy: ReturnType<typeof spyOn>;
 
@@ -19,17 +25,17 @@ describe('Logger', () => {
 
     test('debug 메시지 출력', () => {
       logger.debug('test');
-      expect(errorSpy).toHaveBeenCalledWith('[DEBUG] test');
+      expect(errorSpy).toHaveBeenCalledWith(logged('DEBUG', 'test'));
     });
 
     test('info 메시지 출력', () => {
       logger.info('test');
-      expect(errorSpy).toHaveBeenCalledWith('[INFO] test');
+      expect(errorSpy).toHaveBeenCalledWith(logged('INFO', 'test'));
     });
 
     test('error 메시지 출력', () => {
       logger.error('test');
-      expect(errorSpy).toHaveBeenCalledWith('[ERROR] test');
+      expect(errorSpy).toHaveBeenCalledWith(logged('ERROR', 'test'));
     });
   });
 
@@ -43,12 +49,12 @@ describe('Logger', () => {
 
     test('info 메시지 출력', () => {
       logger.info('test');
-      expect(errorSpy).toHaveBeenCalledWith('[INFO] test');
+      expect(errorSpy).toHaveBeenCalledWith(logged('INFO', 'test'));
     });
 
     test('error 메시지 출력', () => {
       logger.error('test');
-      expect(errorSpy).toHaveBeenCalledWith('[ERROR] test');
+      expect(errorSpy).toHaveBeenCalledWith(logged('ERROR', 'test'));
     });
   });
 
@@ -67,7 +73,7 @@ describe('Logger', () => {
 
     test('error 메시지 출력', () => {
       logger.error('test');
-      expect(errorSpy).toHaveBeenCalledWith('[ERROR] test');
+      expect(errorSpy).toHaveBeenCalledWith(logged('ERROR', 'test'));
     });
   });
 
@@ -76,6 +82,6 @@ describe('Logger', () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     logger.info('test');
-    expect(errorSpy).toHaveBeenCalledWith('[INFO] test');
+    expect(errorSpy).toHaveBeenCalledWith(logged('INFO', 'test'));
   });
 });

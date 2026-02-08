@@ -11,6 +11,10 @@ const LEVEL_PRIORITY: Record<LogLevel, number> = {
   error: 2,
 };
 
+function timestamp(): string {
+  return new Date().toISOString();
+}
+
 class Logger {
   private level: LogLevel = 'info';
 
@@ -20,16 +24,16 @@ class Logger {
 
   debug(message: string): void {
     if (LEVEL_PRIORITY[this.level] > LEVEL_PRIORITY.debug) return;
-    console.error(`[DEBUG] ${message}`);
+    console.error(`${timestamp()} [DEBUG] ${message}`);
   }
 
   info(message: string): void {
     if (LEVEL_PRIORITY[this.level] > LEVEL_PRIORITY.info) return;
-    console.error(`[INFO] ${message}`);
+    console.error(`${timestamp()} [INFO] ${message}`);
   }
 
   error(message: string): void {
-    console.error(`[ERROR] ${message}`);
+    console.error(`${timestamp()} [ERROR] ${message}`);
   }
 }
 
