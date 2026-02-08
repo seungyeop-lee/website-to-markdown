@@ -17,3 +17,8 @@
 - 협력자는 생성자 주입(Constructor Injection)으로 전달한다.
 - `src/services/converter/wtm.ts`와 `src/services/crawler/wtm-crawler.ts`가 composition root로서 의존성을 조립한다.
 - `src/cli/`는 CLI 인터페이스 계층으로, 인자 파싱 후 서비스를 호출한다.
+
+## 함수/메서드 배치
+
+- 외부에 노출되는 메인 함수/메서드는 파일 상단에 배치한다.
+- 메인 함수/메서드 내부에서만 사용하는 내부용 헬퍼 함수/메서드는 파일 하단에 배치한다.
