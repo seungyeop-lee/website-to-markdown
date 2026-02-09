@@ -16,6 +16,7 @@
 - `--log-level` 옵션으로 로그 레벨 제어 (`debug`, `info`, `error`)
 - 다중 페이지 크롤링 (`wtm crawl`) — 링크 추적, 스코프 필터링, 병렬 처리
 - URL 목록 배치 변환 (`wtm batch`) — 지정된 URL만 일괄 변환
+- Chrome CDP 연결 (`--use-chrome`) — 실행 중인 Chrome의 인증 세션을 활용한 변환
 
 ---
 
@@ -81,6 +82,32 @@ bunx @seungyeop-lee/website-to-markdown convert https://example.com/article > ou
 # 파일로 저장 (-o 옵션)
 bunx @seungyeop-lee/website-to-markdown convert -o output.md https://example.com/article
 ```
+
+### Chrome CDP 연결 (인증 필요 사이트)
+
+로그인이 필요한 사이트를 변환할 때, 실행 중인 Chrome 브라우저에 CDP(Chrome DevTools Protocol)로 연결하여 기존 세션(쿠키/인증)을 활용할 수 있습니다.
+
+```bash
+# 1. Chrome을 디버깅 포트와 함께 시작
+#   macOS:
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="$HOME/chrome-debug-profile"
+
+#   Linux:
+google-chrome --remote-debugging-port=9222 --user-data-dir="$HOME/chrome-debug-profile"
+
+# 2. Chrome에서 대상 사이트에 로그인한 후 변환 실행
+wtm convert --use-chrome https://example.com/protected-page
+
+# 커스텀 포트 사용
+wtm convert --use-chrome 9333 https://example.com/protected-page
+```
+
+`--use-chrome`은 `convert`, `crawl`, `batch` 모든 서브커맨드에서 사용 가능합니다.
+
+| 옵션 | 단축 | 설명 | 기본값 |
+|------|------|------|:----:|
+| `--use-chrome` | `-C` | 기본 포트(9222)로 Chrome CDP 연결 | — |
+| `--use-chrome <port>` | `-C <port>` | 지정 포트로 Chrome CDP 연결 | — |
 
 ### 글로벌 설치
 
@@ -250,6 +277,11 @@ const result = await wtm('https://example.com/article', {
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
   },
+});
+
+// Chrome CDP 연결 (인증 필요 사이트)
+const result = await wtm('https://example.com/protected-page', {
+  cdpUrl: 'http://127.0.0.1:9222',
 });
 ```
 

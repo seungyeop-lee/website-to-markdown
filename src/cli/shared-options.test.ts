@@ -1,5 +1,5 @@
 import { test, expect, describe, beforeEach, afterEach } from 'bun:test';
-import { buildWtmOptions } from './shared-options.ts';
+import { buildWtmOptions, formatCdpError } from './shared-options.ts';
 
 describe('buildWtmOptions', () => {
   const originalEnv = { ...process.env };
@@ -48,5 +48,61 @@ describe('buildWtmOptions', () => {
     const result = buildWtmOptions({});
 
     expect(result.logLevel).toBe('info');
+  });
+
+  describe('cdpUrl 변환', () => {
+    test('useChrome 미지정이면 cdpUrl은 undefined', () => {
+      const result = buildWtmOptions({});
+      expect(result.cdpUrl).toBeUndefined();
+    });
+
+    test('useChrome가 true이면 기본 포트 9222 사용', () => {
+      const result = buildWtmOptions({ useChrome: true });
+      expect(result.cdpUrl).toBe('http://127.0.0.1:9222');
+    });
+
+    test('useChrome가 포트 문자열이면 해당 포트 사용', () => {
+      const result = buildWtmOptions({ useChrome: '9333' });
+      expect(result.cdpUrl).toBe('http://127.0.0.1:9333');
+    });
+  });
+});
+
+describe('formatCdpError', () => {
+  test('useChrome + ECONNREFUSED이면 가이드 메시지 포함', () => {
+    const error = new Error('connect ECONNREFUSED 127.0.0.1:9222');
+    const result = formatCdpError(error, { useChrome: true });
+
+    expect(result).toContain('ECONNREFUSED');
+    expect(result).toContain('Chrome CDP 연결 실패 (포트 9222)');
+    expect(result).toContain('--remote-debugging-port=9222');
+    expect(result).toContain('--user-data-dir=');
+  });
+
+  test('useChrome + 커스텀 포트 + ECONNREFUSED이면 해당 포트 표시', () => {
+    const error = new Error('connect ECONNREFUSED 127.0.0.1:9333');
+    const result = formatCdpError(error, { useChrome: '9333' });
+
+    expect(result).toContain('포트 9333');
+    expect(result).toContain('--remote-debugging-port=9333');
+  });
+
+  test('useChrome 없으면 원본 메시지 반환', () => {
+    const error = new Error('connect ECONNREFUSED 127.0.0.1:9222');
+    const result = formatCdpError(error, {});
+
+    expect(result).toBe('connect ECONNREFUSED 127.0.0.1:9222');
+  });
+
+  test('ECONNREFUSED가 아닌 에러면 원본 메시지 반환', () => {
+    const error = new Error('something else');
+    const result = formatCdpError(error, { useChrome: true });
+
+    expect(result).toBe('something else');
+  });
+
+  test('Error가 아닌 값도 처리', () => {
+    const result = formatCdpError('string error', {});
+    expect(result).toBe('string error');
   });
 });

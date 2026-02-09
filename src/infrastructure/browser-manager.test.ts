@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from 'bun:test';
-import type { Browser } from 'playwright';
+import type { Browser, Page } from 'playwright';
 import { BrowserManager } from './browser-manager.ts';
 
 describe('BrowserManager', () => {
@@ -40,6 +40,52 @@ describe('BrowserManager', () => {
     await manager.close();
 
     expect(closeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  describe('create', () => {
+    test('cdpUrl 없으면 기본 BrowserManager를 반환한다', () => {
+      const manager = BrowserManager.create();
+      expect(manager).toBeInstanceOf(BrowserManager);
+    });
+
+    test('cdpUrl 있으면 BrowserManager를 반환한다', () => {
+      const manager = BrowserManager.create('http://127.0.0.1:9222');
+      expect(manager).toBeInstanceOf(BrowserManager);
+    });
+  });
+
+  describe('getPage', () => {
+    test('컨텍스트가 있으면 기존 컨텍스트에서 페이지 생성', async () => {
+      const fakePage = {} as Page;
+      const fakeContext = { newPage: mock(() => Promise.resolve(fakePage)) };
+      const browser = {
+        close: closeSpy,
+        contexts: mock(() => [fakeContext]),
+        newPage: mock(() => Promise.resolve({} as Page)),
+      } as unknown as Browser;
+      const manager = new BrowserManager(mock(() => Promise.resolve(browser)));
+
+      const page = await manager.getPage();
+
+      expect(page).toBe(fakePage);
+      expect(fakeContext.newPage).toHaveBeenCalledTimes(1);
+      expect(browser.newPage).not.toHaveBeenCalled();
+    });
+
+    test('컨텍스트가 없으면 browser.newPage()로 생성', async () => {
+      const fakePage = {} as Page;
+      const browser = {
+        close: closeSpy,
+        contexts: mock(() => []),
+        newPage: mock(() => Promise.resolve(fakePage)),
+      } as unknown as Browser;
+      const manager = new BrowserManager(mock(() => Promise.resolve(browser)));
+
+      const page = await manager.getPage();
+
+      expect(page).toBe(fakePage);
+      expect(browser.newPage).toHaveBeenCalledTimes(1);
+    });
   });
 
   test('launch 진행 중 close 호출 시 launch 완료 후 브라우저를 닫는다', async () => {

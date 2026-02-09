@@ -39,8 +39,12 @@
   "dependencies": {
     "commander": "^14.0.3",
     "mdream": "^0.15.3",
-    "playwright": "^1.58.1",
+    "playwright": "1.58.2",
     "playwright-extra": "^4.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "ws": "^8.19.0"
+  },
+  "patchedDependencies": {
+    "playwright-core@1.58.2": "patches/playwright-core@1.58.2.patch"
   }
 }

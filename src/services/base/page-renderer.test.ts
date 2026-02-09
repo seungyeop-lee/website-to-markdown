@@ -44,9 +44,7 @@ function createMockPage(overrides: Partial<{
 
 function createMockBrowserProvider(page: ReturnType<typeof createMockPage>): BrowserProvider {
   return {
-    getBrowser: mock(() => Promise.resolve({
-      newPage: mock(() => Promise.resolve(page)),
-    })),
+    getPage: mock(() => Promise.resolve(page)),
     close: mock(() => Promise.resolve()),
   } as unknown as BrowserProvider;
 }

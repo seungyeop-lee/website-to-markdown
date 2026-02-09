@@ -12,8 +12,7 @@ export class PageRenderer {
   constructor(private browserProvider: BrowserProvider) {}
 
   async render(url: string): Promise<RenderResult> {
-    const browser = await this.browserProvider.getBrowser();
-    const page = await browser.newPage();
+    const page = await this.browserProvider.getPage();
 
     try {
       await page.goto(url, {

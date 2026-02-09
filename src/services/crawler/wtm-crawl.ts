@@ -17,7 +17,7 @@ export type { CrawlResult };
  * 시작 URL에서 링크를 따라가며 크롤링하여 Markdown으로 변환한다.
  */
 export async function wtmCrawl(startUrl: string, options: CrawlOptions): Promise<CrawlResult> {
-  const browserManager = new BrowserManager();
+  const browserManager = BrowserManager.create(options.cdpUrl);
   try {
     const crawlConfig = new CrawlConfig(options);
     const converter = new DefaultWtmConverter(browserManager, new WtmConfig(options));

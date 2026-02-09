@@ -12,7 +12,7 @@ import { DefaultWtmConverter } from './wtm-converter.ts';
  * URL을 받아 Markdown으로 변환하여 반환한다.
  */
 export async function wtm(url: string, options?: WtmOptions): Promise<WtmResult> {
-  const browserManager = new BrowserManager();
+  const browserManager = BrowserManager.create(options?.cdpUrl);
   try {
     const wtmConfig = new WtmConfig(options);
     const converter = new DefaultWtmConverter(browserManager, wtmConfig);

@@ -18,7 +18,7 @@ export type { CrawlResult };
  * URL 목록을 받아 일괄 변환한다. 링크를 따라가지 않는다.
  */
 export async function wtmUrls(urls: string[], options: BatchConvertOptions): Promise<CrawlResult> {
-  const browserManager = new BrowserManager();
+  const browserManager = BrowserManager.create(options.cdpUrl);
   try {
     const batchConfig = new BatchConvertConfig(options);
     const converter = new DefaultWtmConverter(browserManager, new WtmConfig(options));

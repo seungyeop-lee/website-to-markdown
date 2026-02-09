@@ -1,7 +1,7 @@
 /**
  * 공유 타입 정의
  */
-import type { Browser } from 'playwright';
+import type { Page } from 'playwright';
 
 export interface LLMConfig {
   baseUrl: string;
@@ -10,7 +10,7 @@ export interface LLMConfig {
 }
 
 export interface BrowserProvider {
-  getBrowser(): Promise<Browser>;
+  getPage(): Promise<Page>;
   close(): Promise<void>;
 }
 
@@ -35,6 +35,7 @@ export interface WtmResult {
 export type LogLevel = 'debug' | 'info' | 'error';
 
 export interface WtmOptions {
+  cdpUrl?: string;
   llmConfig?: Partial<LLMConfig>;
   llmRefine?: boolean;
   llmTranslate?: string;
