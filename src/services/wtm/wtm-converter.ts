@@ -36,7 +36,9 @@ export class DefaultWtmConverter implements WtmConverter {
     }
 
     logger.debug(`PageRenderer.render 시작: ${url}`);
-    const { html, metadata } = await this.pageRenderer.render(url);
+    const { html, metadata } = await this.pageRenderer.render(url, {
+      hydrationWait: this.config.hydrationWait
+    });
     logger.debug(`PageRenderer.render 완료 (html: ${html.length}자)\n--- render 결과 ---\n${html}\n--- metadata 결과 ---\n${JSON.stringify(metadata, null, 2)}\n---`);
 
     const markdown = await this.contentExtractor.extract(html, metadata);

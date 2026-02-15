@@ -8,10 +8,14 @@ import type {Page} from 'playwright';
 import type {PageMetadata, RenderResult, BrowserProvider} from '../../types.ts';
 import {logger} from '../../infrastructure/logger.ts';
 
+export interface RenderOptions {
+  hydrationWait?: number;
+}
+
 export class PageRenderer {
   constructor(private browserProvider: BrowserProvider) {}
 
-  async render(url: string): Promise<RenderResult> {
+  async render(url: string, options?: RenderOptions): Promise<RenderResult> {
     const page = await this.browserProvider.getPage();
 
     try {
@@ -20,9 +24,24 @@ export class PageRenderer {
         timeout: 30000,
       });
 
-      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {
+      try {
+        await page.waitForLoadState('networkidle', { timeout: 10000 });
+      } catch {
         logger.debug(`networkidle timeout: ${url}`);
-      });
+      }
+
+      // SPA Hydration/Lazy Loading 대기
+      const waitTime = options?.hydrationWait ?? 0;
+      if (waitTime > 0) {
+        try {
+          await page.evaluate(async (ms) => {
+            window.scrollTo(0, document.body.scrollHeight);
+            await new Promise((resolve) => setTimeout(resolve, ms));
+          }, waitTime);
+        } catch (e) {
+          logger.debug(`Hydration wait warning: ${e}`);
+        }
+      }
 
       const html = await this.getMergedFramesContent(page);
 

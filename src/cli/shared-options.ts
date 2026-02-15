@@ -5,6 +5,7 @@ export interface CommonOptions {
   llmRefine?: boolean;
   llmTranslate?: string;
   useChrome?: string | true;
+  wait?: string;
 }
 
 export function buildWtmOptions(options: CommonOptions): WtmOptions {
@@ -18,6 +19,7 @@ export function buildWtmOptions(options: CommonOptions): WtmOptions {
     } : undefined,
     llmRefine: options.llmRefine ?? false,
     llmTranslate: options.llmTranslate,
+    hydrationWait: Math.max(0, parseInt(options.wait ?? '0', 10) || 0),
     logLevel: (options.logLevel as LogLevel) ?? 'info',
   };
 }

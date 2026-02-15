@@ -10,6 +10,7 @@ export class WtmConfig {
   readonly llm: LLMConfig;
   readonly llmRefine: boolean;
   readonly llmTranslate?: string;
+  readonly hydrationWait: number;
 
   private static readonly LLM_DEFAULTS: LLMConfig = {
     baseUrl: '',
@@ -21,6 +22,7 @@ export class WtmConfig {
     this.logLevel = options?.logLevel ?? 'info';
     this.llmRefine = options?.llmRefine ?? false;
     this.llmTranslate = options?.llmTranslate;
+    this.hydrationWait = options?.hydrationWait ?? 0;
     this.llm = { ...WtmConfig.LLM_DEFAULTS, ...options?.llmConfig };
 
     if (this.llmRefine || this.llmTranslate) {

@@ -98,6 +98,25 @@ describe('PageRenderer', () => {
 
       expect(page.close).toHaveBeenCalledTimes(1);
     });
+
+    test('hydrationWait 옵션이 주어지면 대기 시간을 인자로 evaluate 호출', async () => {
+      const page = createMockPage();
+      const renderer = new PageRenderer(createMockBrowserProvider(page));
+
+      await renderer.render('https://example.com', { hydrationWait: 1000 });
+
+      // hydration wait는 evaluate에 함수와 대기 시간을 함께 전달
+      expect(page.evaluate).toHaveBeenCalledWith(expect.any(Function), 1000);
+    });
+
+    test('hydrationWait 옵션이 없으면 대기 시간 인자가 포함된 evaluate 호출 없음', async () => {
+      const page = createMockPage();
+      const renderer = new PageRenderer(createMockBrowserProvider(page));
+
+      await renderer.render('https://example.com');
+
+      expect(page.evaluate).not.toHaveBeenCalledWith(expect.any(Function), expect.any(Number));
+    });
   });
 
   describe('getMergedFramesContent (프레임 병합)', () => {

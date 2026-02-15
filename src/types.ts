@@ -40,6 +40,7 @@ export interface WtmOptions {
   llmRefine?: boolean;
   llmTranslate?: string;
   logLevel?: LogLevel;
+  hydrationWait?: number;
 }
 
 export interface BatchConvertOptions extends WtmOptions {

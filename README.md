@@ -4,7 +4,7 @@
 
 ### 주요 기능
 
-- SPA/JavaScript 렌더링 사이트 지원 (Playwright + Stealth 플러그인)
+- SPA/JavaScript 렌더링 사이트 지원 (Playwright + Stealth 플러그인, `--wait` 옵션으로 하이드레이션 대기)
 - [mdream](https://github.com/nichochar/mdream) 기반 HTML → Markdown 변환 (본문 추출, 노이즈 필터링, Tailwind 처리)
 - LLM 후처리를 통한 마크다운 정제 (`--llm-refine`, 선택 사항)
 - LLM 기반 다국어 번역 (`--llm-translate <lang>`, 선택 사항)

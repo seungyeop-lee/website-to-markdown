@@ -10,6 +10,7 @@ wtm convert [options] <url>
 
 | 옵션 | 단축 | 설명 | 기본값 |
 |------|------|------|:----:|
+| `--wait <ms>` | `-w` | 페이지 로드 후 추가 대기 시간 (ms). SPA 등에서 유용 | 0 |
 | `--llm-refine` | `-r` | LLM 후처리로 마크다운 정제 | false |
 | `--llm-translate <lang>` | `-t` | LLM 기반 번역 대상 언어 | — |
 | `--output <file>` | `-o` | 결과를 파일로 저장 | stdout |
@@ -18,6 +19,7 @@ wtm convert [options] <url>
 
 ```bash
 wtm convert https://example.com/article
+wtm convert --wait 3000 https://example.com/spa-page
 wtm convert --llm-refine https://example.com/article
 wtm convert --llm-translate ko https://example.com/article
 wtm convert --llm-refine --llm-translate ko https://example.com/article
@@ -42,6 +44,7 @@ wtm crawl [options]
 | `--path-depth <n>` | `-p` | scope 기준 하위 경로 최대 깊이 | 1 |
 | `--scope <n>` | `-s` | 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...) | 0 |
 | `--concurrency <n>` | `-c` | 동시 처리 수 | 3 |
+| `--wait <ms>` | `-w` | 페이지 로드 후 추가 대기 시간 (ms). SPA 등에서 유용 | 0 |
 | `--llm-refine` | `-r` | LLM 후처리로 마크다운 정제 | false |
 | `--llm-translate <lang>` | `-t` | LLM 기반 번역 대상 언어 | — |
 | `--use-chrome [port]` | `-C` | Chrome CDP 연결 (기본 포트 9222) | — |
@@ -96,6 +99,7 @@ wtm batch [options]
 | `--urls <file>` | `-f` | URL 목록 파일 경로 (한 줄에 하나씩) | (필수) |
 | `--output-dir <dir>` | `-D` | 결과 파일 저장 디렉토리 | (필수) |
 | `--concurrency <n>` | `-c` | 동시 처리 수 | 3 |
+| `--wait <ms>` | `-w` | 페이지 로드 후 추가 대기 시간 (ms). SPA 등에서 유용 | 0 |
 | `--llm-refine` | `-r` | LLM 후처리로 마크다운 정제 | false |
 | `--llm-translate <lang>` | `-t` | LLM 기반 번역 대상 언어 | — |
 | `--use-chrome [port]` | `-C` | Chrome CDP 연결 (기본 포트 9222) | — |
@@ -181,6 +185,11 @@ const result = await wtm('https://example.com/article', {
     apiKey: 'your-api-key',
     model: 'gpt-4o-mini',
   },
+});
+
+// SPA 페이지 변환 (하이드레이션 대기)
+const result = await wtm('https://example.com/spa-page', {
+  hydrationWait: 3000,
 });
 
 // 디버그 모드

@@ -10,6 +10,7 @@ export function registerConvertCommand(program: Command): void {
     .command('convert')
     .description('웹 페이지를 Markdown으로 변환')
     .argument('<url>', '[필수] 변환할 웹 페이지 URL')
+    .option('-w, --wait <ms>', '[선택] 페이지 로드 후 추가 대기 시간 (ms) (SPA 등에서 유용)', '0')
     .option('-L, --log-level <level>', '[선택] 로그 레벨 (debug, info, error)', 'info')
     .option('-r, --llm-refine', '[선택] LLM 후처리로 마크다운 정제')
     .option('-t, --llm-translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')

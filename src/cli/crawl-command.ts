@@ -16,6 +16,7 @@ export function registerCrawlCommand(program: Command): void {
     .option('-p, --path-depth <n>', '[선택] scope 기준 하위 경로 최대 깊이', '1')
     .option('-s, --scope <n>', '[선택] 스코프 레벨 (0: 현재 디렉토리, 1: 한 단계 위, ...)', '0')
     .option('-c, --concurrency <n>', '[선택] 동시 처리 수', '3')
+    .option('-w, --wait <ms>', '[선택] 페이지 로드 후 추가 대기 시간 (ms) (SPA 등에서 유용)', '0')
     .option('-L, --log-level <level>', '[선택] 로그 레벨 (debug, info, error)', 'info')
     .option('-r, --llm-refine', '[선택] LLM 후처리로 마크다운 정제')
     .option('-t, --llm-translate <lang>', '[선택] 마크다운을 지정 언어로 번역 (예: ko, ja, en)')
